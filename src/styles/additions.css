@@ -266,24 +266,6 @@
   font-size: 0.93rem;
 }
 
-.mission-quote {
-  margin: 0;
-  padding: 1rem 1.1rem;
-  border-left: 3px solid var(--color-gold);
-  color: var(--color-deep);
-  font-family: var(--font-display);
-  font-size: 1.12rem;
-  line-height: 1.55;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.mission-quote-source {
-  margin: 0.75rem 0 0;
-  color: var(--color-stone);
-  font-size: 0.82rem;
-  letter-spacing: 0.03em;
-}
-
 /* ─── Historical timeline panel ─── */
 .history-timeline-panel {
   background: #fff;

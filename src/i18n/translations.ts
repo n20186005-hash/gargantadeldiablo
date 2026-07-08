@@ -196,8 +196,31 @@ export const translations: Record<Locale, Translations> = {
     transportation: {
       title: "精准交通指南",
       airport: { title: "✈️ 从胡胡伊省首府 / 机场出发", content: "最近的机场是胡胡伊国际机场（Gobernador Horacio Guzmán，代码 JUJ），距蒂尔卡拉约 113 公里。亦可通过萨尔塔机场（SLA）中转，距蒂尔卡拉约 210 公里。", options: [
-        { name: "自驾 / 租车（最推荐）", price: "约 1.5 小时车程", time: "113 公里", steps: ["从胡胡伊机场沿 9 号国道（RN-9）向北行驶", "沿乌马瓦卡峡谷北上，途经沃尔坎（Volcán）、通巴亚（Tumbaya）等小镇", "到达蒂尔卡拉镇后，按路标指示前往 Garganta del Diablo 入口"] }
+        { name: "自驾 / 租车（推荐）", price: "约 1.5 小时车程", time: "113 公里", steps: ["从胡胡伊机场沿 9 号国道（RN-9）向北行驶", "沿乌马瓦卡峡谷北上，途经沃尔坎（Volcán）、通巴亚（Tumbaya）等小镇", "到达蒂尔卡拉镇后，按路标指示前往 Garganta del Diablo 入口"] },
+        { name: "包车 / 接送（机场或市区出发）", price: "约 1.5–2 小时（直达）", time: "约 113 公里", steps: ["在胡胡伊机场或圣萨尔瓦多德胡胡伊（San Salvador de Jujuy）预约接送服务", "可选择直达蒂尔卡拉镇，或在行程中顺路停靠观景点", "抵达蒂尔卡拉后，再前往 Garganta del Diablo 入口"] },
+        { name: "机场出租车 / Remís + 巴士换乘", price: "约 2–3 小时（含换乘）", time: "JUJ → 市区车站 → Tilcara", steps: ["从胡胡伊机场乘出租车或 Remís 前往圣萨尔瓦多德胡胡伊长途车站（Terminal）", "购买前往蒂尔卡拉（Tilcara）的巴士车票", "抵达蒂尔卡拉后，转乘出租车/Remís，或步行前往景区入口"] }
       ]},
+      publicTransport: {
+        title: "🚌 长途巴士 / 公共交通",
+        content: "若不自驾，通常可先抵达蒂尔卡拉镇（Tilcara），再完成最后一段到峡谷入口的接驳。班次与站台可能随季节调整，建议以车站公告为准。",
+        options: [
+          {
+            name: "San Salvador de Jujuy → Tilcara（长途巴士）",
+            description: "从胡胡伊省首府出发的常规线路，是公共交通最常用的方式之一。",
+            steps: ["前往圣萨尔瓦多德胡胡伊长途车站（Terminal de Ómnibus）", "购买前往蒂尔卡拉（Tilcara）的车票（班次以车站为准）", "抵达蒂尔卡拉后，转乘出租车/Remís 或步行前往 Garganta del Diablo 入口"]
+          },
+          {
+            name: "Salta → Tilcara（长途巴士）",
+            description: "适合从萨尔塔入境/中转的路线，沿途可结合 Quebrada de las Conchas 等景观规划行程。",
+            steps: ["前往萨尔塔长途车站（Terminal de Salta）", "购买直达或经停蒂尔卡拉的车票（以车站为准）", "抵达蒂尔卡拉后，完成最后 5 公里到景区入口的接驳"]
+          },
+          {
+            name: "蒂尔卡拉 → 景区入口（最后一段）",
+            description: "景区入口距镇中心约 5 公里，路况以土路为主，晴天尘土较大。",
+            steps: ["从蒂尔卡拉镇中心打车或联系 Remís 前往入口停车场", "体力充沛者可选择步行（约 1 小时）或骑行前往", "到达入口后按指示进入步道"]
+          }
+        ]
+      },
       city: { title: "🏘️ 从蒂尔卡拉镇出发", content: "魔鬼之喉位于蒂尔卡拉镇外约 5 公里处。可选择步行（约 1 小时）、骑自行车或搭乘当地出租车前往。部分旅行社还提供四驱越野车导览服务。", steps: ["从蒂尔卡拉主广场沿指示牌方向出发", "沿土路前行约 5 公里", "到达 Garganta del Diablo 停车场和步道入口"] },
       tips: { title: "交通与高海拔小贴士", items: [
         "**海拔**：蒂尔卡拉镇海拔约 2,450 米，抵达后建议先适应半天再前往峡谷徒步",
@@ -373,8 +396,31 @@ export const translations: Record<Locale, Translations> = {
     transportation: {
       title: "Getting There",
       airport: { title: "✈️ From Jujuy Capital / Airport", content: "The nearest airport is Gobernador Horacio Guzmán International Airport (JUJ), about 113 km from Tilcara. Salta Airport (SLA) is an alternative, about 210 km away.", options: [
-        { name: "Self-drive / Rental Car (Recommended)", price: "approx. 1.5 hrs", time: "113 km", steps: ["From Jujuy Airport, take National Route 9 (RN-9) northbound", "Drive through the Quebrada de Humahuaca, passing Volcán, Tumbaya and other villages", "Arrive in Tilcara and follow signs to the Garganta del Diablo trailhead"] }
+        { name: "Self-drive / Rental Car (Recommended)", price: "approx. 1.5 hrs", time: "113 km", steps: ["From Jujuy Airport, take National Route 9 (RN-9) northbound", "Drive through the Quebrada de Humahuaca, passing Volcán, Tumbaya and other villages", "Arrive in Tilcara and follow signs to the Garganta del Diablo trailhead"] },
+        { name: "Private transfer (airport or city pick-up)", price: "approx. 1.5–2 hrs", time: "≈113 km", steps: ["Book a transfer from JUJ airport or San Salvador de Jujuy", "Travel directly to Tilcara (optionally with scenic stops)", "From Tilcara, continue to the trailhead"] },
+        { name: "Taxi/Remís + bus connection", price: "approx. 2–3 hrs (with transfer)", time: "JUJ → terminal → Tilcara", steps: ["Take a taxi or Remís from JUJ to the bus terminal in San Salvador de Jujuy", "Buy a ticket to Tilcara (schedules vary)", "From Tilcara, take a taxi/Remís or walk to the trailhead"] }
       ]},
+      publicTransport: {
+        title: "🚌 Long-distance buses / Public transport",
+        content: "If you are not driving, the usual approach is to reach Tilcara first and then complete the last 5 km to the trailhead. Timetables may change seasonally — check the terminal boards.",
+        options: [
+          {
+            name: "San Salvador de Jujuy → Tilcara (bus)",
+            description: "A regular line from the provincial capital to Tilcara.",
+            steps: ["Go to the bus terminal in San Salvador de Jujuy", "Buy a ticket to Tilcara (subject to availability)", "From Tilcara, take a taxi/Remís or walk to the trailhead"]
+          },
+          {
+            name: "Salta → Tilcara (bus)",
+            description: "Useful if you are arriving via Salta or combining routes in the north-west.",
+            steps: ["Go to the bus terminal in Salta", "Buy a ticket to Tilcara (direct or with stops, depending on the day)", "From Tilcara, continue the last segment to the trailhead"]
+          },
+          {
+            name: "Tilcara → trailhead (last segment)",
+            description: "The trailhead is about 5 km from town; the road is mostly unpaved.",
+            steps: ["Use a local taxi/Remís to the car park and entrance", "Alternatively, walk (≈1 hour) or cycle if conditions allow", "Enter the trail following on-site signage"]
+          }
+        ]
+      },
       city: { title: "🏘️ From Tilcara Town", content: "Garganta del Diablo is about 5 km outside Tilcara. You can walk (approx. 1 hour), cycle, or take a local taxi. Some tour operators also offer 4x4 guided excursions.", steps: ["From Tilcara's main square, follow signs towards Garganta del Diablo", "Follow the dirt road for about 5 km", "Arrive at the car park and trailhead"] },
       tips: { title: "Transport & Altitude Tips", items: [
         "**Altitude**: Tilcara sits at ~2,450m — allow half a day to acclimatise before hiking the gorge",
@@ -550,8 +596,31 @@ export const translations: Record<Locale, Translations> = {
     transportation: {
       title: "Cómo Llegar",
       airport: { title: "✈️ Desde la Capital / Aeropuerto de Jujuy", content: "El aeropuerto más cercano es el Aeropuerto Internacional Gobernador Horacio Guzmán (JUJ), a unos 113 km de Tilcara. El Aeropuerto de Salta (SLA) es una alternativa, a unos 210 km.", options: [
-        { name: "Auto propio / alquilado (Recomendado)", price: "aprox. 1,5 hs", time: "113 km", steps: ["Desde el aeropuerto de Jujuy tomar la Ruta Nacional 9 (RN-9) hacia el norte", "Recorrer la Quebrada de Humahuaca pasando por Volcán, Tumbaya y otros pueblos", "Llegar a Tilcara y seguir las indicaciones hacia el ingreso de la Garganta del Diablo"] }
+        { name: "Auto propio / alquilado (Recomendado)", price: "aprox. 1,5 hs", time: "113 km", steps: ["Desde el aeropuerto de Jujuy tomar la Ruta Nacional 9 (RN-9) hacia el norte", "Recorrer la Quebrada de Humahuaca pasando por Volcán, Tumbaya y otros pueblos", "Llegar a Tilcara y seguir las indicaciones hacia el ingreso de la Garganta del Diablo"] },
+        { name: "Traslado privado (aeropuerto o ciudad)", price: "aprox. 1,5–2 hs", time: "≈113 km", steps: ["Reservá un traslado desde JUJ o desde San Salvador de Jujuy", "Viaje directo a Tilcara (con paradas escénicas opcionales)", "Desde Tilcara continuá hasta el ingreso"] },
+        { name: "Taxi/Remís + conexión en ómnibus", price: "aprox. 2–3 hs (con trasbordo)", time: "JUJ → terminal → Tilcara", steps: ["Tomá un taxi o Remís desde JUJ hasta la terminal de ómnibus en San Salvador de Jujuy", "Comprá un pasaje a Tilcara (según disponibilidad)", "Desde Tilcara, taxi/Remís o caminata hasta el inicio del sendero"] }
       ]},
+      publicTransport: {
+        title: "🚌 Ómnibus de larga distancia / Transporte público",
+        content: "Si no manejás, lo habitual es llegar primero a Tilcara y luego completar los últimos 5 km hasta el ingreso. Los horarios pueden variar según temporada — consultá en la terminal.",
+        options: [
+          {
+            name: "San Salvador de Jujuy → Tilcara (ómnibus)",
+            description: "Línea regular desde la capital provincial hacia Tilcara.",
+            steps: ["Ir a la terminal de ómnibus en San Salvador de Jujuy", "Comprar un pasaje a Tilcara (según disponibilidad)", "Desde Tilcara, taxi/Remís o caminata hasta el ingreso"]
+          },
+          {
+            name: "Salta → Tilcara (ómnibus)",
+            description: "Útil si llegás vía Salta o combinás recorridos por el noroeste.",
+            steps: ["Ir a la terminal de Salta", "Comprar un pasaje a Tilcara (directo o con paradas)", "Desde Tilcara, completar el último tramo al ingreso"]
+          },
+          {
+            name: "Tilcara → ingreso (último tramo)",
+            description: "El ingreso está a unos 5 km; el camino es mayormente de tierra.",
+            steps: ["Taxi/Remís hasta el estacionamiento e inicio del sendero", "Alternativa: caminar (≈1 hora) o ir en bicicleta", "Ingresar siguiendo la señalización"]
+          }
+        ]
+      },
       city: { title: "🏘️ Desde el Pueblo de Tilcara", content: "La Garganta del Diablo está a unos 5 km de Tilcara. Se puede ir caminando (aprox. 1 hora), en bicicleta o en taxi. Algunos operadores turísticos también ofrecen excursiones guiadas en 4x4.", steps: ["Desde la plaza principal de Tilcara seguir las indicaciones hacia la Garganta del Diablo", "Seguir el camino de tierra unos 5 km", "Llegar al estacionamiento e inicio del sendero"] },
       tips: { title: "Transporte y Altura", items: [
         "**Altura**: Tilcara está a ~2.450m — conviene aclimatarse medio día antes de hacer la caminata por el cañón",
@@ -727,8 +796,31 @@ export const translations: Record<Locale, Translations> = {
     transportation: {
       title: "Come Arrivare",
       airport: { title: "✈️ Dalla Capitale / Aeroporto di Jujuy", content: "L'aeroporto più vicino è l'Aeroporto Internazionale Gobernador Horacio Guzmán (JUJ), a circa 113 km da Tilcara. L'Aeroporto di Salta (SLA) è un'alternativa, a circa 210 km.", options: [
-        { name: "Auto propria / a noleggio (Consigliato)", price: "ca. 1,5 ore", time: "113 km", steps: ["Dall'aeroporto di Jujuy prendere la Ruta Nacional 9 (RN-9) verso nord", "Percorrere la Quebrada de Humahuaca passando per Volcán, Tumbaya e altri villaggi", "Arrivare a Tilcara e seguire le indicazioni per l'ingresso della Garganta del Diablo"] }
+        { name: "Auto propria / a noleggio (Consigliato)", price: "ca. 1,5 ore", time: "113 km", steps: ["Dall'aeroporto di Jujuy prendere la Ruta Nacional 9 (RN-9) verso nord", "Percorrere la Quebrada de Humahuaca passando per Volcán, Tumbaya e altri villaggi", "Arrivare a Tilcara e seguire le indicazioni per l'ingresso della Garganta del Diablo"] },
+        { name: "Transfer privato (aeroporto o città)", price: "ca. 1,5–2 ore", time: "≈113 km", steps: ["Prenota un transfer da JUJ o da San Salvador de Jujuy", "Viaggio diretto fino a Tilcara (con eventuali soste panoramiche)", "Da Tilcara prosegui fino all'ingresso del sentiero"] },
+        { name: "Taxi/Remís + coincidenza in autobus", price: "ca. 2–3 ore (con cambio)", time: "JUJ → terminal → Tilcara", steps: ["Taxi o Remís da JUJ al terminal autobus di San Salvador de Jujuy", "Acquista un biglietto per Tilcara (orari variabili)", "Da Tilcara: taxi/Remís oppure a piedi fino all'inizio del sentiero"] }
       ]},
+      publicTransport: {
+        title: "🚌 Autobus a lunga percorrenza / Trasporto pubblico",
+        content: "Se non guidi, in genere si raggiunge Tilcara in autobus e si completa l’ultimo tratto (circa 5 km) fino all’ingresso. Gli orari possono variare: verifica in terminal.",
+        options: [
+          {
+            name: "San Salvador de Jujuy → Tilcara (autobus)",
+            description: "Linea regolare dalla capitale provinciale a Tilcara.",
+            steps: ["Raggiungi il terminal autobus di San Salvador de Jujuy", "Acquista un biglietto per Tilcara (secondo disponibilità)", "Da Tilcara: taxi/Remís oppure camminata fino all’ingresso"]
+          },
+          {
+            name: "Salta → Tilcara (autobus)",
+            description: "Utile se arrivi via Salta o combini itinerari nel nord-ovest.",
+            steps: ["Raggiungi il terminal autobus di Salta", "Acquista un biglietto per Tilcara (diretto o con fermate)", "Da Tilcara completa l’ultimo tratto fino all’ingresso"]
+          },
+          {
+            name: "Tilcara → ingresso (ultimo tratto)",
+            description: "L’ingresso dista circa 5 km e la strada è in gran parte sterrata.",
+            steps: ["Taxi/Remís fino al parcheggio e all’inizio del sentiero", "In alternativa, cammina (≈1 ora) o usa la bici se le condizioni lo permettono", "Entra seguendo la segnaletica sul posto"]
+          }
+        ]
+      },
       city: { title: "🏘️ Dal Paese di Tilcara", content: "La Garganta del Diablo dista circa 5 km da Tilcara. Si può raggiungere a piedi (ca. 1 ora), in bicicletta o in taxi. Alcuni operatori turistici offrono anche escursioni guidate in 4x4.", steps: ["Dalla piazza principale di Tilcara seguire le indicazioni per la Garganta del Diablo", "Seguire la strada sterrata per circa 5 km", "Arrivare al parcheggio e all'inizio del sentiero"] },
       tips: { title: "Trasporti e Altitudine", items: [
         "**Altitudine**: Tilcara è a ~2.450m — conviene acclimatarsi per mezza giornata prima di fare l'escursione nel canyon",
