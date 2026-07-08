@@ -1,0 +1,767 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { translations, type Locale } from '../../i18n/translations';
+import { getSeo } from '../../lib/seo';
+import galleryImagesData from '../../gallery-data.json';
+
+export function getStaticPaths() {
+  return (['es', 'en', 'zh', 'it'] as Locale[]).map((locale) => ({ params: { locale } }));
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = translations[locale];
+const seo = getSeo(locale);
+const MAPS_URL = 'https://maps.app.goo.gl/5omkpMV3k3cC52ku5';
+const GALLERY_PLAN = [
+  { key: 'gorge', from: 0, to: 6 },
+  { key: 'waterfall', from: 7, to: 11 },
+  { key: 'rock', from: 12, to: 16 },
+  { key: 'panorama', from: 17, to: 21 },
+];
+function categoryForIndex(i: number): string {
+  const plan = GALLERY_PLAN.find((p) => i >= p.from && i <= p.to);
+  return plan ? plan.key : 'gorge';
+}
+const galleryImages = (galleryImagesData as string[]).map((src, i) => ({ src, category: categoryForIndex(i) }));
+const ALL_LABELS: Record<Locale, string> = { zh: '全部', en: 'All', es: 'Todas', it: 'Tutte' };
+
+const MARKER_POS: Record<string, { top: string; left: string }> = {
+  entrada: { top: '74%', left: '16%' },
+  iglesia: { top: '56%', left: '38%' },
+  monumento: { top: '28%', left: '54%' },
+  corrales: { top: '70%', left: '70%' },
+  necrópolis: { top: '44%', left: '84%' },
+};
+
+const LANG_LABELS: Record<Locale, string> = { zh: '中文', en: 'EN', es: 'ES', it: 'IT' };
+
+const GOOGLE_REVIEWS = [
+  { name: 'Carlos M.', avatar: 'CM', rating: 5, date: '2025-06-12', text: 'Impresionante cañón natural. La caminata hasta la cascada es inolvidable y el sonido del agua retumbando entre las paredes de roca te deja sin palabras. Imperdible si estás en Tilcara.' },
+  { name: 'Laura B.', avatar: 'LB', rating: 5, date: '2025-05-03', text: 'Un lugar mágico donde la naturaleza muestra su fuerza. El Paso Estrecho es sobrecogedor y la cascada, especialmente después de las lluvias, es espectacular. La energía del lugar es única.' },
+  { name: 'Marco R.', avatar: 'MR', rating: 5, date: '2025-04-18', text: 'Canyon naturale magnifico nel cuore della Quebrada. Il sentiero è ben segnalato, la cascata è mozzafiato e il passaggio stretto regala emozioni uniche. Consigliatissimo!' },
+  { name: '张明', avatar: '张', rating: 5, date: '2025-03-22', text: '大自然的鬼斧神工！狭缝穿行那段太震撼了，两侧岩壁几乎碰到一起。瀑布虽然不是最大的，但在峡谷中的回声特别有力量。徒步难度适中，强烈推荐！' },
+  { name: 'Emily T.', avatar: 'ET', rating: 5, date: '2025-02-09', text: 'Absolutely breathtaking natural wonder. The slot passage is thrilling and the waterfall echoing through the gorge is mesmerizing. Wear good shoes — the terrain is rocky but worth every step.' },
+  { name: 'Diego F.', avatar: 'DF', rating: 4, date: '2024-11-15', text: 'Una joya natural cerca de Tilcara. El sendero es accesible, las vistas panorámicas son increíbles y la experiencia de caminar dentro del cañón es única. Llevar agua y protección solar.' },
+];
+
+function renderText(text: string): string {
+  if (!text) return '';
+  return text
+    .split(/(\*\*.*?\*\*)/g)
+    .map((part) => {
+      if (part.startsWith('**') && part.endsWith('**')) return `<strong>${part.slice(2, -2)}</strong>`;
+      return part;
+    })
+    .join('');
+}
+
+const transportSections = [
+  {
+    title: t.transportation.airport.title,
+    content: t.transportation.airport.content,
+    options: t.transportation.airport.options,
+  },
+  ...(t.transportation.publicTransport
+    ? [{ title: t.transportation.publicTransport.title, content: t.transportation.publicTransport.content, options: t.transportation.publicTransport.options }]
+    : []),
+  {
+    title: t.transportation.city.title,
+    content: t.transportation.city.content,
+    steps: t.transportation.city.steps,
+  },
+];
+---
+
+<BaseLayout locale={locale} title={seo.title} description={seo.description}>
+  <!-- 导航 -->
+  <nav class="site-nav" id="site-nav">
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <span style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:#fff;">Garganta del Diablo</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:2rem;">
+      <div class="nav-links">
+        <a href="#history">{t.nav.history}</a>
+        <a href="#architecture">{t.nav.architecture}</a>
+        <a href="#monuments">{t.nav.monuments}</a>
+        <a href="#eco">{t.nav.eco}</a>
+        <a href="#visiting">{t.nav.visiting}</a>
+        <a href="#transportation">{t.nav.transportation}</a>
+        <a href="#gallery">{t.nav.gallery}</a>
+        <a href="#reviews">{t.nav.reviews}</a>
+        <a href="#faq">{t.nav.faq}</a>
+        <a href="#location">{t.nav.location}</a>
+        <a href="#sitemap">{t.siteMap.title}</a>
+        <a href="#itinerary">{t.itinerary.title}</a>
+      </div>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme" type="button">
+        <span class="theme-icon-sun">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </span>
+        <span class="theme-icon-moon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </span>
+      </button>
+      <div class="lang-switcher">
+        {
+          (['zh', 'en', 'es', 'it'] as Locale[]).map((l) => (
+            <button class={l === locale ? 'lang-btn active' : 'lang-btn'} data-locale={l} type="button">
+              {LANG_LABELS[l]}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-texture"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-tagline">{t.hero.tagline}</p>
+      <h1 class="hero-title">{t.hero.title}</h1>
+      <p class="hero-subtitle">{t.hero.subtitle}</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;">
+        {
+          t.hero.tags.map((tag: string) => (
+            <span style="background:rgba(255,255,255,0.2);padding:0.25rem 0.75rem;border-radius:100px;font-size:0.85rem;font-weight:600;color:#fff;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.3);">
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+      <div class="hero-description">
+        <p>📍 {t.hero.description.address}</p>
+        <p>📞 {t.hero.description.phone}</p>
+        <p>🏛️ {t.hero.description.category}</p>
+      </div>
+      <a href="#history" class="hero-cta">
+        {t.hero.cta}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+        </svg>
+      </a>
+      <div class="hero-cta-group">
+        <a href="#visiting" class="hero-cta-secondary">{t.visiting.title}</a>
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">{t.location.openMaps}</a>
+      </div>
+    </div>
+    <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
+      <div class="hero-meta">
+        <div class="hero-rating">4.7</div>
+        <div class="hero-stars">★ ★ ★ ★ ★</div>
+        <div class="hero-reviews">5,699 {t.rating.reviews} · {t.rating.source}</div>
+      </div>
+    </a>
+  </section>
+
+  <!-- History -->
+  <section id="history" class="section">
+    <div class="reveal">
+      <p class="section-label">01</p>
+      <h2 class="section-title">{t.history.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.history.intro)}></p>
+    </div>
+    <div class="reveal">
+      <h3 style="font-family:var(--font-display);font-size:1.25rem;font-weight:650;color:var(--color-deep);margin:0 0 0.75rem;">{t.myths.title}</h3>
+      <p style="color:var(--color-earth-soft);line-height:1.7;margin:0 0 1.25rem;" set:html={renderText(t.myths.intro)}></p>
+      <div class="faq-list">
+        {
+          t.myths.items.map((item: any) => (
+            <div class="faq-item">
+              <button class="faq-question" data-faq type="button">
+                <span style="color:var(--color-deep);font-weight:600;">{item.title}</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon">
+                  <path d="M6 9l6 6 6-6"></path>
+                </svg>
+              </button>
+              <div class="faq-answer">
+                {String(item.content)
+                  .split('\n\n')
+                  .map((paragraph: string) => (
+                    <p style="white-space:pre-line;" set:html={renderText(paragraph)}></p>
+                  ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="reveal">
+      <div style="padding:2rem;background:var(--color-cream);border-radius:12px;border:1px solid rgba(0,0,0,0.05);position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-10px;right:-10px;opacity:0.05;transform:rotate(15deg);">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+          </svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--color-deep);margin:0;">{t.curiosities.title}</h3>
+        </div>
+        <p style="font-size:1rem;color:var(--color-earth-soft);line-height:1.6;margin:0;position:relative;z-index:1;white-space:pre-line;" set:html={renderText(t.curiosities.content)}></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section id="architecture" class="section" style="background:rgba(0,0,0,0.02);">
+    <div class="reveal">
+      <p class="section-label">02</p>
+      <h2 class="section-title">{t.architecture.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.architecture.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div style="display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:3rem;">
+        {
+          (Object.entries(t.architecture.specs) as [string, any][]).map(([, spec]) => (
+            <div style="padding:1.5rem;background:#fff;border-radius:8px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 4px 12px rgba(0,0,0,0.02);">
+              <h4 style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--color-deep);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;">
+                {spec.title}
+              </h4>
+              <p style="font-size:0.95rem;color:var(--color-earth-soft);line-height:1.6;" set:html={renderText(spec.content)}></p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="reveal">
+      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(0,0,0,0.05);">
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--color-deep);margin-bottom:1.5rem;">{t.architecture.plaque.title}</h3>
+        <div style="display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));">
+          {
+            t.architecture.plaque.items.map((item: any) => (
+              <div style="padding:1rem;background:rgba(0,0,0,0.02);border-radius:6px;border-left:3px solid var(--color-gold);">
+                <div style="font-size:0.85rem;color:var(--color-earth-soft);margin-bottom:0.25rem;font-weight:600;">{item.label}</div>
+                <div style="font-size:0.95rem;color:var(--color-deep);font-weight:500;">{item.value}</div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Monuments / Activities -->
+  <section id="monuments" class="section">
+    <div class="reveal">
+      <p class="section-label">03</p>
+      <h2 class="section-title">{t.monuments.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <p class="about-text" style="white-space:pre-line;margin-bottom:2rem;" set:html={renderText(t.monuments.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div style="display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">
+        {
+          t.monuments.items.map((item: any, i: number) => (
+            <div style="padding:1.5rem;background:#f8f9fa;border-radius:8px;border:1px solid rgba(0,0,0,0.05);">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--color-gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:bold;margin-bottom:1rem;">
+                {i + 1}
+              </div>
+              <h4 style="font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--color-deep);margin-bottom:0.75rem;">{item.name}</h4>
+              <p style="font-size:0.9rem;color:var(--color-earth-soft);line-height:1.6;white-space:pre-line;" set:html={renderText(item.description)}></p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Heritage Protection -->
+  <section id="eco" class="section" style="background:var(--color-cream);">
+    <div class="reveal">
+      <p class="section-label">04</p>
+      <h2 class="section-title">{t.eco.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <p class="about-text" style="white-space:pre-line;margin-bottom:2rem;" set:html={renderText(t.eco.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div class="bring-section" style="margin-top:0;">
+        <ul class="bring-list">
+          {
+            t.eco.items.map((item: string) => (
+              <li set:html={renderText(item)}></li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Time/Space contrast -->
+  <section class="section" style="background:var(--color-cream);">
+    <div class="reveal">
+      <p class="section-label">05</p>
+      <h2 class="section-title">{t.contrast.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.contrast.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;">
+        <div>
+          <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.1);margin-bottom:1rem;">
+            <img src="https://gargantadeldiablo.com/gallery/garganta-del-diablo-6.jpg" alt="Garganta del Diablo gorge walls" style="width:100%;height:auto;display:block;" />
+          </div>
+          <p style="text-align:center;font-size:0.95rem;color:var(--color-earth-soft);font-weight:600;">{t.contrast.before}</p>
+        </div>
+        <div>
+          <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.1);margin-bottom:1rem;">
+            <img src="https://gargantadeldiablo.com/gallery/garganta-del-diablo-18.jpg" alt="Garganta del Diablo panoramic view" style="width:100%;height:auto;display:block;" />
+          </div>
+          <p style="text-align:center;font-size:0.95rem;color:var(--color-earth-soft);font-weight:600;">{t.contrast.after}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visiting -->
+  <section id="visiting" style="background:linear-gradient(180deg,var(--color-cream) 0%,#eee8dd 100%);">
+    <div class="section">
+      <div class="reveal">
+        <p class="section-label">06</p>
+        <h2 class="section-title">{t.visiting.title}</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="reveal">
+        <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.visiting.intro)}></p>
+      </div>
+      <div class="reveal">
+        <div class="info-grid">
+          {
+            [
+              { title: t.visiting.hours.title, content: t.visiting.hours.content, note: t.visiting.hours.note },
+              { title: t.visiting.price.title, content: t.visiting.price.content, note: t.visiting.price.note },
+              { title: t.visiting.duration.title, content: t.visiting.duration.content, note: t.visiting.duration.note },
+            ].map((c) => (
+              <div class="info-card">
+                <div class="info-card-title">{c.title}</div>
+                <div class="info-card-content" style="white-space:pre-line;" set:html={renderText(c.content)}></div>
+                <div class="info-card-note" set:html={renderText(c.note)}></div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="essentials-grid">
+          {
+            t.visiting.essentials.map((e) => (
+              <div class="essentials-card">
+                <div class="essentials-icon">{e.icon}</div>
+                <div>
+                  <div class="essentials-title">{e.title}</div>
+                  <div class="essentials-text">{e.text}</div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="bring-section" style="margin-top:3rem;">
+          <div class="bring-title">{t.visiting.tips.title}</div>
+          <ul class="bring-list">
+            {
+              t.visiting.tips.items.map((item: string) => (
+                <li set:html={renderText(item)}></li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="reveal">
+        <div id="weather-widget"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transportation -->
+  <section id="transportation" class="section">
+    <div class="reveal">
+      <p class="section-label">07</p>
+      <h2 class="section-title">{t.transportation.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <div class="faq-list">
+        {
+          transportSections.map((sec) => (
+            <div class="faq-item expanded">
+              <div class="faq-question" style="cursor:default;">
+                <div style="display:flex;align-items:center;gap:1rem;">
+                  <span style="color:var(--color-deep);font-weight:600;">{sec.title}</span>
+                </div>
+              </div>
+              <div class="faq-answer">
+                <p style="white-space:pre-line;margin-bottom:1.5rem;" set:html={renderText(sec.content)}></p>
+                {
+                  sec.options && sec.options.length > 0 && (
+                    <div style="display:flex;flex-direction:column;gap:1rem;">
+                      {sec.options.map((opt: any) => (
+                        <div style="padding:1.25rem;background:rgba(0,0,0,0.03);border-radius:6px;">
+                          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+                            <strong style="color:var(--color-deep);font-size:1.05rem;">{opt.name}</strong>
+                          </div>
+                          {(opt.price || opt.time) && (
+                            <div style="font-size:0.9rem;color:var(--color-earth-soft);display:flex;gap:1rem;margin-bottom:1rem;">
+                              {opt.price && <span style="color:var(--color-gold);font-weight:600;">{opt.price}</span>}
+                              {opt.time && <span>{opt.time}</span>}
+                            </div>
+                          )}
+                          {opt.description && (
+                            <p style="font-size:0.9rem;color:var(--color-earth-soft);margin-bottom:0.5rem;" set:html={renderText(opt.description)}></p>
+                          )}
+                          {opt.steps && opt.steps.length > 0 && (
+                            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                              {opt.steps.map((step: string) => (
+                                <div style="font-size:0.9rem;color:var(--color-earth-soft);line-height:1.5;">• {renderText(step)}</div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+                {
+                  sec.steps && sec.steps.length > 0 && (
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;background:rgba(0,0,0,0.02);padding:1.25rem;border-radius:6px;margin-top:1rem;">
+                      {sec.steps.map((step: string) => (
+                        <div style="font-size:0.9rem;color:var(--color-earth-soft);line-height:1.5;">• {renderText(step)}</div>
+                      ))}
+                    </div>
+                  )
+                }
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="reveal">
+      <div style="margin-top:3rem;padding:2rem;background:rgba(0,0,0,0.02);border-radius:12px;border:1px solid rgba(0,0,0,0.05);">
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--color-deep);margin-bottom:1rem;">{t.transportation.tips.title}</h3>
+        <ul style="padding-left:1.5rem;color:var(--color-earth-soft);line-height:1.8;">
+          {
+            t.transportation.tips.items.map((tip: string) => (
+              <li set:html={renderText(tip)}></li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="section">
+    <div class="reveal">
+      <p class="section-label">08</p>
+      <h2 class="section-title">{t.gallery.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    {
+      galleryImages.length > 0 && (
+        <>
+          <div class="reveal">
+            <div class="gallery-filters" id="gallery-filters">
+              <button class="gallery-filter active" data-filter="all" type="button">{ALL_LABELS[locale]}</button>
+              {
+                t.gallery.categories.map((c) => (
+                  <button class="gallery-filter" data-filter={c.key} type="button">{c.label}</button>
+                ))
+              }
+            </div>
+          </div>
+          <div class="reveal">
+            <div class="gallery-grid" id="gallery-grid">
+              {
+                galleryImages.map((item, i) => (
+                  <div class="gallery-item" data-index={i} data-category={item.category}>
+                    <img src={item.src} alt={`Garganta del Diablo gallery image ${i + 1}`} loading="lazy" />
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <div class="reveal">
+            <div style="text-align:center;margin-top:2rem;">
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="google-maps-btn">
+                {t.gallery.viewMore}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <!-- Reviews -->
+  <section id="reviews" class="section" style="background:linear-gradient(180deg,var(--color-cream) 0%,#e8e2d6 100%);">
+    <div class="reveal">
+      <p class="section-label">09</p>
+      <h2 class="section-title">{t.reviews.title}</h2>
+      <p class="section-subtitle">{t.reviews.subtitle}</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <div class="reviews-grid" style="margin-bottom:4rem;">
+        {
+          GOOGLE_REVIEWS.map((review) => (
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">{review.avatar}</div>
+                <div class="review-info">
+                  <div class="review-name">{review.name}</div>
+                  <div class="review-date">{review.date}</div>
+                </div>
+                <div class="review-rating">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+              </div>
+              <p class="review-text">{review.text}</p>
+              <div class="review-source">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4285F4"></path>
+                </svg>
+                Google
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="reveal">
+      <div style="background:#fff;border-radius:12px;padding:2.5rem;border:1px solid rgba(0,0,0,0.05);box-shadow:0 10px 30px rgba(0,0,0,0.03);">
+        <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:600;color:var(--color-deep);margin-bottom:1rem;text-align:center;">{t.reviews.nearbyTitle}</h3>
+        <p style="text-align:center;color:var(--color-earth-soft);margin-bottom:2rem;" set:html={renderText(t.reviews.nearbyIntro)}></p>
+        <div style="display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));">
+          {
+            t.reviews.nearbyItems.map((item: any) => (
+              <div style="padding:1.5rem;background:rgba(0,0,0,0.02);border-radius:8px;">
+                <h4 style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--color-deep);margin-bottom:0.5rem;">📍 {item.name}</h4>
+                <p style="font-size:0.9rem;color:var(--color-earth-soft);line-height:1.5;" set:html={renderText(item.description)}></p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div style="text-align:center;margin-top:3rem;">
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="google-maps-btn">
+          {t.reviews.viewMore}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="section">
+      <div class="reveal">
+        <p class="section-label">10</p>
+        <h2 class="section-title">{t.faq.title}</h2>
+        <p class="section-subtitle">{t.faq.subtitle}</p>
+        <div class="section-divider"></div>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          {
+            t.faq.items.map((item: any) => (
+              <div class="faq-item">
+                <button class="faq-question" data-faq type="button">
+                  <span style="color:var(--color-deep);font-weight:600;">{item.question}</span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon">
+                    <path d="M6 9l6 6 6-6"></path>
+                  </svg>
+                </button>
+                <div class="faq-answer">
+                  {item.answer.split('\n\n').map((paragraph: string) => (
+                    <p set:html={renderText(paragraph)}></p>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section id="location" class="section">
+    <div class="reveal">
+      <p class="section-label">11</p>
+      <h2 class="section-title">{t.location.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <div class="location-section">
+        <div class="location-map-container">
+          <iframe
+            src="https://www.google.com/maps?q=Garganta%20del%20Diablo%20Tilcara%20Jujuy%20Argentina&output=embed"
+            width="800"
+            height="600"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Garganta del Diablo Location Map"
+          >
+          </iframe>
+        </div>
+        <div class="location-info">
+          <p class="location-address" style="white-space:pre-line;">{t.location.address}</p>
+          <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="maps-link">
+            {t.location.openMaps}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Band -->
+  <section class="cta-band">
+    <div class="cta-band-inner reveal">
+      <h2 class="cta-band-title">{t.ctaBand.title}</h2>
+      <p class="cta-band-subtitle">{t.ctaBand.subtitle}</p>
+      <div class="cta-band-buttons">
+        <a href="#visiting" class="cta-btn cta-btn-primary">{t.ctaBand.buttons[0]}</a>
+        <a href="https://turismo.jujuy.gob.ar/" target="_blank" rel="noopener noreferrer" class="cta-btn">{t.ctaBand.buttons[1]}</a>
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="cta-btn">{t.ctaBand.buttons[2]}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Site Map -->
+  <section id="sitemap" class="section">
+    <div class="reveal">
+      <p class="section-label">12</p>
+      <h2 class="section-title">{t.siteMap.title}</h2>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:1rem;" set:html={renderText(t.siteMap.intro)}></p>
+      <div class="sitemap-hint">{t.siteMap.hint}</div>
+    </div>
+    <div class="reveal">
+      <div class="sitemap-wrap">
+        <div class="sitemap-map" id="sitemap-map">
+          <svg class="sitemap-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="hillGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d9a86a" />
+                <stop offset="100%" stop-color="#b56532" />
+              </linearGradient>
+            </defs>
+            <path d="M0,300 L0,210 C60,180 90,150 150,160 C200,168 230,120 300,130 C350,137 380,110 400,120 L400,300 Z" fill="url(#hillGrad)" opacity="0.85" />
+            <path d="M0,300 L0,240 C80,225 120,205 180,212 C250,220 300,200 400,210 L400,300 Z" fill="#a8531f" opacity="0.5" />
+            <path d="M40,260 C120,235 200,250 280,225 C320,213 360,225 390,215" stroke="#faf7f2" stroke-width="2" fill="none" opacity="0.5" stroke-dasharray="4 6" />
+            <path d="M70,150 C140,170 220,150 300,135" stroke="#faf7f2" stroke-width="1.5" fill="none" opacity="0.35" stroke-dasharray="3 7" />
+          </svg>
+          {
+            t.siteMap.zones.map((z, i) => (
+              <button class="sitemap-marker" type="button" data-zone={z.key}
+                data-name={z.name} data-desc={z.desc}
+                style={`top:${MARKER_POS[z.key].top};left:${MARKER_POS[z.key].left};`}>
+                {i + 1}
+              </button>
+            ))
+          }
+        </div>
+        <div class="sitemap-detail" id="sitemap-detail">
+          <div class="sitemap-detail-index" id="sitemap-detail-index">01</div>
+          <h3 class="sitemap-detail-name" id="sitemap-detail-name"></h3>
+          <p class="sitemap-detail-desc" id="sitemap-detail-desc"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Itinerary -->
+  <section id="itinerary" class="section" style="background:rgba(0,0,0,0.02);">
+    <div class="reveal">
+      <p class="section-label">13</p>
+      <h2 class="section-title">{t.itinerary.title}</h2>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.itinerary.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div class="timeline">
+        {
+          t.itinerary.steps.map((s) => (
+            <div class="timeline-item">
+              <div class="timeline-time">{s.time}</div>
+              <div class="timeline-marker"><span class="timeline-dot"></span></div>
+              <div class="timeline-card">
+                <h4 class="timeline-title">{s.title}</h4>
+                <p class="timeline-text">{s.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <p class="footer-links-title">{t.footer.linksTitle}</p>
+      <div class="footer-links-grid">
+        {
+          t.footer.links.map((link: any) => (
+            <a href={link.url} target="_blank" rel="noopener noreferrer" class="footer-link-item">
+              {link.name}
+            </a>
+          ))
+        }
+      </div>
+      <div style="margin-top:1.25rem;text-align:center;">
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="google-maps-btn">Google Maps →</a>
+      </div>
+    </div>
+    <div class="footer-legal" style="max-width:1100px;margin:0 auto;padding:1rem 2rem 0;text-align:center;">
+      <a href="/privacy" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.8rem;margin-right:1.5rem;">Privacy Policy</a>
+      <a href="/terms" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.8rem;margin-right:1.5rem;">Terms of Service</a>
+      <a href="/cookies" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.8rem;">Cookie Settings</a>
+    </div>
+    <p class="footer-text" style="margin-top:2rem;font-size:0.9rem;font-weight:600;color:var(--color-gold);">{t.footer.callToAction}</p>
+    <p class="footer-text" style="margin-top:1rem;white-space:pre-line;">{t.footer.text}</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" style="display:none;">
+    <button id="lightbox-close" class="lightbox-close" type="button">×</button>
+    <button id="lightbox-prev" class="lightbox-prev" type="button">‹</button>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="" />
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+    <button id="lightbox-next" class="lightbox-next" type="button">›</button>
+  </div>
+</BaseLayout>
