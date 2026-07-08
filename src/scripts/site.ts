@@ -189,6 +189,12 @@ if (weatherEl) {
     es: 'Clima en Tilcara',
     it: 'Meteo a Tilcara',
   };
+  const metaLabels: Record<AppLocale, { temp: string; precip: string; uv: string; sunrise: string; sunset: string }> = {
+    zh: { temp: '气温', precip: '降水', uv: '紫外线', sunrise: '日出', sunset: '日落' },
+    en: { temp: 'Temp', precip: 'Precip', uv: 'UV', sunrise: 'Sunrise', sunset: 'Sunset' },
+    es: { temp: 'Temp.', precip: 'Precip.', uv: 'UV', sunrise: 'Amanecer', sunset: 'Atardecer' },
+    it: { temp: 'Temp.', precip: 'Prec.', uv: 'UV', sunrise: 'Alba', sunset: 'Tramonto' },
+  };
   const msgs: Record<AppLocale, (uv: string) => string> = {
     zh: (uv) => `当前紫外线指数：${uv}。蒂尔卡拉位于海拔约2,465米的高原，日照极强，请务必做好防晒！`,
     en: (uv) => `Current UV Index: ${uv}. Tilcara sits at ~2,465m altitude with intense sun — sunscreen is essential!`,
@@ -197,7 +203,7 @@ if (weatherEl) {
   };
   const colors = ['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1'];
   fetch(
-    'https://api.open-meteo.com/v1/forecast?latitude=-23.58&longitude=-65.40&current=temperature_2m,precipitation,uv_index'
+    'https://api.open-meteo.com/v1/forecast?latitude=-23.58&longitude=-65.40&current=temperature_2m,precipitation,uv_index&daily=sunrise,sunset&timezone=auto'
   )
     .then((r) => r.json())
     .then((data) => {
@@ -205,6 +211,10 @@ if (weatherEl) {
       const temp = data.current.temperature_2m;
       const precip = data.current.precipitation;
       const uv = data.current.uv_index;
+      const sunriseRaw = data.daily?.sunrise?.[0];
+      const sunsetRaw = data.daily?.sunset?.[0];
+      const sunrise = sunriseRaw ? new Date(sunriseRaw).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+      const sunset = sunsetRaw ? new Date(sunsetRaw).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
       let idx = 0;
       if (uv >= 3 && uv < 6) idx = 1;
       else if (uv >= 6 && uv < 8) idx = 2;
@@ -213,12 +223,15 @@ if (weatherEl) {
       const uvLevel = labels[locale][idx];
       const uvColor = colors[idx];
       const uvText = `${uv} (${uvLevel})`;
+      const meta = metaLabels[locale];
       weatherEl.innerHTML = `
         <h3 style="font-size:1.2rem;font-weight:700;color:var(--color-deep);display:flex;align-items:center;gap:0.5rem;margin:0;">${titles[locale]}</h3>
         <div style="display:flex;flex-wrap:wrap;gap:1rem;margin:0.5rem 0;">
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${temp}°C</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${precip}mm</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;color:${uvColor};">UV: ${uvText}</div>
+          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.temp}: ${temp}°C</div>
+          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.precip}: ${precip}mm</div>
+          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;color:${uvColor};">${meta.uv}: ${uvText}</div>
+          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.sunrise}: ${sunrise}</div>
+          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.sunset}: ${sunset}</div>
         </div>
         <p style="margin:0;font-size:0.95rem;color:var(--color-earth);line-height:1.5;">${msgs[locale](uvText)}</p>
       `;
