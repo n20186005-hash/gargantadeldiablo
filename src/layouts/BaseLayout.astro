@@ -4,6 +4,7 @@ import '../styles/additions.css';
 import { localeConfig, type Locale } from '../i18n/config';
 import { getSeo } from '../lib/seo';
 import { generateSchema } from '../lib/schema';
+import { ENTITY } from '../lib/entity';
 
 interface Props {
   locale: Locale;
@@ -36,6 +37,13 @@ const schema = includeSchema ? generateSchema(locale, site) : null;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content={ENTITY.fullName} />
     <link rel="canonical" href={canonical} />
     {
       Object.entries(alternates).map(([l, url]) => (
@@ -56,10 +64,12 @@ const schema = includeSchema ? generateSchema(locale, site) : null;
     <meta property="og:description" content={seo.ogDescription} />
     <meta property="og:site_name" content={seo.siteName} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={`${ENTITY.fullName} in ${ENTITY.city}, ${ENTITY.province}, ${ENTITY.country}`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={seo.ogTitle} />
     <meta name="twitter:description" content={seo.ogDescription} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={`${ENTITY.fullName} in ${ENTITY.city}, ${ENTITY.country}`} />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf8f5" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212" />
@@ -70,6 +80,13 @@ const schema = includeSchema ? generateSchema(locale, site) : null;
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    {/* Google Analytics 4 (GA4) */}
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script
+      is:inline
+      set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HXM22WWPKP');`}
+    ></script>
 
     {/* 在绘制前设置主题，避免闪烁 */}
     <script

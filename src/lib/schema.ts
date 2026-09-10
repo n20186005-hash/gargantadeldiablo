@@ -1,5 +1,8 @@
+import { ENTITY, ENTITY_FAQ } from './entity';
+
 export function generateSchema(locale: string, baseUrl: string) {
   const localUrl = `${baseUrl}/${locale}`;
+  const attractionId = `${ENTITY.siteUrl}/#attraction`;
 
   const name =
     locale === 'es'
@@ -12,12 +15,12 @@ export function generateSchema(locale: string, baseUrl: string) {
 
   const description =
     locale === 'es'
-      ? 'Garganta del Diablo en Jujuy, Argentina. Impresionante cañón natural en la Quebrada de Humahuaca, Patrimonio de la Humanidad UNESCO.'
+      ? 'Garganta del Diablo en Tilcara, Jujuy, Argentina. Cañón natural de altura en la Quebrada de Humahuaca, Patrimonio de la Humanidad UNESCO.'
       : locale === 'zh'
-        ? '阿根廷胡胡伊省的魔鬼之喉（Garganta del Diablo），乌马瓦卡峡谷世界遗产中的壮丽天然峡谷。'
+        ? '阿根廷胡胡伊省蒂尔卡拉（Tilcara）的魔鬼之喉（Garganta del Diablo），乌马瓦卡峡谷世界遗产中的壮丽高海拔天然峡谷。'
         : locale === 'it'
-          ? 'Garganta del Diablo a Jujuy, Argentina. Spettacolare canyon naturale nella Quebrada de Humahuaca, Patrimonio UNESCO.'
-          : 'Garganta del Diablo in Jujuy, Argentina. A stunning natural gorge in the Quebrada de Humahuaca, UNESCO World Heritage Site.';
+          ? 'Garganta del Diablo a Tilcara, Jujuy, Argentina. Spettacolare gola d’alta quota nella Quebrada de Humahuaca, Patrimonio UNESCO.'
+          : 'Garganta del Diablo in Tilcara, Jujuy, Argentina. A stunning high-altitude gorge in the Quebrada de Humahuaca, UNESCO World Heritage Site.';
 
   const faqByLocale = {
     zh: [
@@ -109,30 +112,129 @@ export function generateSchema(locale: string, baseUrl: string) {
     },
   } as const;
 
+  /**
+   * HowTo：精准覆盖 GSC 高意图查询 `camino a la garganta del diablo`
+   *（用户要的是「从蒂尔卡拉镇怎么走到峡谷」这一具体路径）
+   */
+  const howToByLocale = {
+    zh: {
+      name: '蒂尔卡拉至魔鬼之喉徒步路线（Camino a la Garganta del Diablo）',
+      description:
+        '从蒂尔卡拉镇中心步行前往魔鬼之喉的完整路线：约 5 公里土路抵达步道入口，购票后沿峡谷步道下行至瀑布。',
+      supply: ['饮用水（每人至少 1 升）', '防晒霜、遮阳帽与墨镜', '防滑徒步鞋', '阿根廷比索现金（用于购票）'],
+      tool: ['涉水用防水鞋', '手机与相机的防水袋'],
+      steps: [
+        { name: '从蒂尔卡拉镇中心出发', text: '从蒂尔卡拉主广场沿指示牌方向，前往 Paraje Garganta del Diablo。' },
+        { name: '沿土路步行约 5 公里', text: '到景区入口约 5 公里（步行约 1 小时），缓坡上行；也可骑行或搭乘 Remís 出租车前往。' },
+        { name: '到达入口并购买门票', text: '在入口停车场购票进入步道，票价以现场公示为准，建议携带现金。' },
+        { name: '沿峡谷步道下行', text: '步道在岩壁之间下行，途中有涉水路段；请穿防滑鞋并注意脚下。' },
+        { name: '抵达瀑布后原路返回', text: '峡谷底部为瀑布与天然观景点，返回走同一步道，往返约 2–3 小时。' },
+      ],
+    },
+    en: {
+      name: 'Trail to the Garganta del Diablo from Tilcara',
+      description:
+        'The full walking route from Tilcara town centre to the Garganta del Diablo: about 5 km of dirt road to the trailhead, then a descent into the gorge to the waterfall.',
+      supply: ['Water (at least 1 litre per person)', 'Sunscreen, cap and sunglasses', 'Grippy hiking shoes', 'Cash in Argentine pesos for the entrance fee'],
+      tool: ['Waterproof footwear for the stream crossings', 'Waterproof bag for your phone or camera'],
+      steps: [
+        { name: 'Set off from Tilcara town centre', text: 'From Tilcara’s main square, follow the signposted dirt road towards Paraje Garganta del Diablo.' },
+        { name: 'Walk the 5 km dirt road', text: 'The approach is about 5 km (roughly 1 hour on foot) with a gentle climb; you can also cycle or take a remís taxi.' },
+        { name: 'Arrive at the entrance and pay the fee', text: 'The entrance fee is paid at the trailhead car park; the price is displayed on site and cash is recommended.' },
+        { name: 'Descend the gorge trail', text: 'The trail drops between rock walls and includes stream-crossing sections; wear non-slip footwear and take care.' },
+        { name: 'Reach the waterfall and walk back', text: 'The waterfall and natural viewpoints sit at the bottom of the gorge; return by the same trail. Round trip: 2–3 hours.' },
+      ],
+    },
+    es: {
+      name: 'Camino a la Garganta del Diablo desde Tilcara',
+      description:
+        'Recorrido completo a pie desde el centro de Tilcara hasta la Garganta del Diablo: unos 5 km de camino de tierra hasta el acceso y luego descenso por el sendero del cañón hasta la cascada.',
+      supply: ['Agua (mínimo 1 litro por persona)', 'Protector solar, gorra y anteojos de sol', 'Calzado de trekking con buen agarre', 'Efectivo en pesos para la entrada'],
+      tool: ['Calzado impermeable para los tramos de vadeo', 'Bolsa impermeable para el teléfono o la cámara'],
+      steps: [
+        { name: 'Salí desde el centro de Tilcara', text: 'Desde la plaza principal de Tilcara seguí el camino de tierra señalizado hacia el Paraje Garganta del Diablo.' },
+        { name: 'Caminá los 5 km de camino de tierra', text: 'El trayecto hasta el acceso es de unos 5 km (aproximadamente 1 hora a pie) en subida suave; también se puede hacer en bicicleta o en taxi/remís.' },
+        { name: 'Llegá al acceso y aboná la entrada', text: 'La entrada se abona en el estacionamiento del inicio del sendero; el precio se exhibe en el lugar y conviene llevar efectivo.' },
+        { name: 'Descendé por el sendero del cañón', text: 'El sendero baja entre paredes de roca con tramos de vadeo; usá calzado antideslizante y avanzá con cuidado.' },
+        { name: 'Llegá a la cascada y regresá', text: 'En el fondo del cañón están la cascada y los miradores naturales; el regreso es por el mismo sendero. Ida y vuelta: 2–3 horas.' },
+      ],
+    },
+    it: {
+      name: 'Sentiero alla Garganta del Diablo da Tilcara',
+      description:
+        'Percorso completo a piedi dal centro di Tilcara alla Garganta del Diablo: circa 5 km di strada sterrata fino all’ingresso, poi discesa nel sentiero della gola fino alla cascata.',
+      supply: ['Acqua (almeno 1 litro a persona)', 'Crema solare, cappello e occhiali da sole', 'Scarpe da trekking con buon grip', 'Contanti in pesos per il biglietto'],
+      tool: ['Calzature impermeabili per i tratti di guado', 'Sacca impermeabile per telefono o fotocamera'],
+      steps: [
+        { name: 'Parti dal centro di Tilcara', text: 'Dalla piazza principale di Tilcara segui la strada sterrata indicata verso il Paraje Garganta del Diablo.' },
+        { name: 'Percorri i 5 km di sterrato', text: 'L’avvicinamento è di circa 5 km (all’incirca 1 ora a piedi) in leggera salita; si può anche andare in bici o in taxi/remís.' },
+        { name: 'Arriva all’ingresso e paga il biglietto', text: 'Il biglietto si paga al parcheggio dell’inizio del sentiero; il prezzo è esposto in loco e conviene avere contanti.' },
+        { name: 'Scendi lungo il sentiero della gola', text: 'Il sentiero scende tra pareti di roccia con tratti di guado; usa calzature antiscivolo e procedi con cautela.' },
+        { name: 'Raggiungi la cascata e torna indietro', text: 'Sul fondo della gola si trovano la cascata e i punti panoramici; il ritorno è sullo stesso sentiero. Andata e ritorno: 2–3 ore.' },
+      ],
+    },
+  } as const;
+
+  const touristTypeByLocale = {
+    zh: ['徒步爱好者', '自然探索者', '深度文化旅行者'],
+    en: ['hikers', 'nature travellers', 'cultural travellers'],
+    es: ['senderistas', 'viajeros de naturaleza', 'viajeros culturales'],
+    it: ['escursionisti', 'viaggiatori naturalistici', 'viaggiatori culturali'],
+  } as const;
+
+  const breadcrumbByLocale = {
+    zh: ['首页', '蒂尔卡拉', '胡胡伊省', '阿根廷'],
+    en: ['Home', 'Tilcara', 'Jujuy', 'Argentina'],
+    es: ['Inicio', 'Tilcara', 'Jujuy', 'Argentina'],
+    it: ['Home', 'Tilcara', 'Jujuy', 'Argentina'],
+  } as const;
+
+  const inLanguage =
+    locale === 'es' ? 'es-AR' : locale === 'zh' ? 'zh-CN' : locale === 'it' ? 'it-IT' : 'en-US';
+
   const trip = tripByLocale[locale as keyof typeof tripByLocale] || tripByLocale.en;
   const faq = faqByLocale[locale as keyof typeof faqByLocale] || faqByLocale.en;
+  const extraFaq = ENTITY_FAQ[locale as keyof typeof ENTITY_FAQ] || ENTITY_FAQ.en;
+  const breadcrumb = breadcrumbByLocale[locale as keyof typeof breadcrumbByLocale] || breadcrumbByLocale.en;
+  const howTo = howToByLocale[locale as keyof typeof howToByLocale] || howToByLocale.es;
+  const touristType = [...(touristTypeByLocale[locale as keyof typeof touristTypeByLocale] || touristTypeByLocale.es)];
+  const allFaq = [...faq, ...extraFaq];
 
   return {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': ['TouristAttraction', 'Place'],
+        '@id': attractionId,
         name,
-        alternateName: ['Garganta del Diablo', 'Devil\'s Throat', '魔鬼之喉', 'Gola del Diavolo'],
+        alternateName: [
+          'Garganta del Diablo',
+          "Devil's Throat",
+          '魔鬼之喉',
+          'Gola del Diavolo',
+          `${ENTITY.city} ${ENTITY.fullName}`,
+        ],
         description,
-        url: localUrl,
-        image: `${baseUrl}/gallery/garganta-del-diablo-1.jpg`,
+        url: ENTITY.siteUrl,
+        mainEntityOfPage: localUrl,
+        image: [
+          `${baseUrl}/gallery/garganta-del-diablo-1.jpg`,
+          `${baseUrl}/gallery/garganta-del-diablo-6.jpg`,
+          `${baseUrl}/gallery/garganta-del-diablo-20.jpg`,
+        ],
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: -23.577,
-          longitude: -65.383,
+          latitude: ENTITY.latitude,
+          longitude: ENTITY.longitude,
         },
+        hasMap: ENTITY.mapsShareUrl,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'Paraje Garganta del Diablo',
-          addressLocality: 'Tilcara',
-          addressRegion: 'Jujuy',
-          addressCountry: 'AR',
+          streetAddress: ENTITY.fullName,
+          addressLocality: ENTITY.city,
+          addressRegion: ENTITY.province,
+          postalCode: ENTITY.postalCode,
+          addressCountry: ENTITY.countryCode,
         },
         openingHoursSpecification: {
           '@type': 'OpeningHoursSpecification',
@@ -142,34 +244,78 @@ export function generateSchema(locale: string, baseUrl: string) {
         },
         priceRange: 'ARS',
         isAccessibleForFree: false,
-        mainEntityOfPage: localUrl,
+        touristType,
+        containedInPlace: [
+          {
+            '@type': 'City',
+            name: ENTITY.city,
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: ENTITY.city,
+              addressRegion: ENTITY.province,
+              addressCountry: ENTITY.countryCode,
+            },
+          },
+          {
+            '@type': 'Place',
+            name: 'Quebrada de Humahuaca',
+            description: 'UNESCO World Heritage Site (2003), Jujuy, Argentina',
+            sameAs: ENTITY.unescoUrl,
+          },
+        ],
         additionalProperty: [
-          { '@type': 'PropertyValue', name: 'geoCoordinate', value: 'CJ4G+55 Tilcara, Jujuy' },
+          { '@type': 'PropertyValue', name: 'geoCoordinate', value: ENTITY.plusCode },
           { '@type': 'PropertyValue', name: 'altitude', value: 'approx. 2,450 metros' },
           { '@type': 'PropertyValue', name: 'type', value: 'Garganta natural / Cascada' },
           { '@type': 'PropertyValue', name: 'worldHeritage', value: 'Quebrada de Humahuaca (UNESCO 2003)' },
           { '@type': 'PropertyValue', name: 'searchIntentDisambiguation', value: 'Not the Iguazu Falls Garganta del Diablo' },
+          { '@type': 'PropertyValue', name: 'nearbyLandmark', value: ENTITY.landmark1 },
+          { '@type': 'PropertyValue', name: 'nearbyLandmark', value: ENTITY.landmark2 },
         ],
-        sameAs: [
-          'https://maps.app.goo.gl/5omkpMV3k3cC52ku5',
-          'https://turismo.jujuy.gob.ar/',
-          'https://www.argentina.travel/',
-          'https://whc.unesco.org/zh/list/1116/',
-        ],
+        sameAs: [ENTITY.mapsShareUrl, ENTITY.govtTourismUrl, ENTITY.nationalTourismUrl, ENTITY.unescoUrl],
         aggregateRating: {
           '@type': 'AggregateRating',
-          ratingValue: '4.7',
-          reviewCount: '5699',
+          ratingValue: String(ENTITY.rating),
+          reviewCount: String(ENTITY.reviewCount),
           bestRating: '5',
         },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${ENTITY.siteUrl}/#breadcrumb`,
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: breadcrumb[0],
+            item: localUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: `${ENTITY.fullName} (${ENTITY.city})`,
+            item: localUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: `${ENTITY.city}, ${ENTITY.province}`,
+            item: localUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 4,
+            name: `${ENTITY.province}, ${ENTITY.country}`,
+            item: localUrl,
+          },
+        ],
       },
       {
         '@type': 'FAQPage',
         '@id': `${localUrl}#faq`,
         url: `${localUrl}#faq`,
-        inLanguage:
-          locale === 'es' ? 'es-AR' : locale === 'zh' ? 'zh-CN' : locale === 'it' ? 'it-IT' : 'en-US',
-        mainEntity: faq.map((item) => ({
+        inLanguage,
+        mainEntity: allFaq.map((item) => ({
           '@type': 'Question',
           name: item.q,
           acceptedAnswer: {
@@ -235,6 +381,7 @@ export function generateSchema(locale: string, baseUrl: string) {
         provider: {
           '@type': 'Organization',
           name: 'Garganta del Diablo Guide',
+          url: ENTITY.siteUrl,
         },
         offers: {
           '@type': 'Offer',
@@ -260,30 +407,84 @@ export function generateSchema(locale: string, baseUrl: string) {
         ],
       },
       {
+        /**
+         * HowTo：精准匹配 GSC 高意图查询「camino a la garganta del diablo」
+         * 承载「从蒂尔卡拉镇怎么走到峡谷」这一具体交通/徒步意图
+         */
+        '@type': 'HowTo',
+        '@id': `${localUrl}#camino-a-la-garganta`,
+        url: `${localUrl}#transportation`,
+        name: howTo.name,
+        description: howTo.description,
+        inLanguage,
+        /** 从蒂尔卡拉镇中心出发，往返约 2–3 小时 */
+        totalTime: 'PT3H',
+        additionalProperty: [
+          {
+            '@type': 'PropertyValue',
+            name: 'startingPoint',
+            value: `${ENTITY.city}, ${ENTITY.province}, ${ENTITY.country}`,
+          },
+          {
+            '@type': 'PropertyValue',
+            name: 'accessModes',
+            value:
+              locale === 'zh'
+                ? '步行、自驾、骑行或 Remís 出租车'
+                : locale === 'es'
+                  ? 'a pie, en auto, en bicicleta o en taxi/remís'
+                  : locale === 'it'
+                    ? 'a piedi, in auto, in bici o in taxi/remís'
+                    : 'on foot, by car, by bike or by remís taxi',
+          },
+          { '@type': 'PropertyValue', name: 'distanceToTrailhead', value: '5 km' },
+          { '@type': 'PropertyValue', name: 'altitude', value: 'approx. 2,450 metros' },
+          { '@type': 'PropertyValue', name: 'map', value: ENTITY.mapsShareUrl },
+        ],
+        supply: howTo.supply.map((s: string) => ({ '@type': 'HowToSupply', name: s })),
+        tool: howTo.tool.map((s: string) => ({ '@type': 'HowToTool', name: s })),
+        step: howTo.steps.map((s: { name: string; text: string }, i: number) => ({
+          '@type': 'HowToStep',
+          position: i + 1,
+          name: s.name,
+          text: s.text,
+          url: `${localUrl}#transportation`,
+        })),
+      },
+      {
         '@type': 'WebPage',
         '@id': localUrl,
         url: localUrl,
         name,
         description,
+        inLanguage,
         isPartOf: {
           '@type': 'WebSite',
-          '@id': `${localUrl}#website`,
+          '@id': `${ENTITY.siteUrl}/#website`,
         },
         about: {
-          '@id': localUrl,
+          '@id': attractionId,
+        },
+        breadcrumb: {
+          '@id': `${ENTITY.siteUrl}/#breadcrumb`,
         },
       },
       {
         '@type': 'WebSite',
-        '@id': `${localUrl}#website`,
-        url: localUrl,
+        '@id': `${ENTITY.siteUrl}/#website`,
+        url: ENTITY.siteUrl,
         name,
-        inLanguage:
-          locale === 'es' ? 'es-AR' : locale === 'zh' ? 'zh-CN' : locale === 'it' ? 'it-IT' : 'en-US',
+        inLanguage,
         isAccessibleForFree: true,
         publisher: {
           '@type': 'Organization',
+          '@id': `${ENTITY.siteUrl}/#organization`,
           name: 'Garganta del Diablo Guide',
+          url: ENTITY.siteUrl,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${ENTITY.siteUrl}/icon.svg`,
+          },
         },
       },
     ],

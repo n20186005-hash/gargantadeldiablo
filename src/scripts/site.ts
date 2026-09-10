@@ -1,7 +1,20 @@
 // Garganta del Diablo — 客户端交互（原生 JS，无框架）
 
+import { UV_COLORS, uvLevelIndex, weatherIcon, weatherKey } from '../lib/weather-codes';
+import { WEATHER_LABELS } from '../lib/weather-labels';
+import { buildWeatherAdvice, renderAdviceHtml } from '../lib/weather-advice';
+
 type AppLocale = 'es' | 'en' | 'zh' | 'it';
 const LOCALES: AppLocale[] = ['es', 'en', 'zh', 'it'];
+
+// PWA：注册 Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      /* ignore */
+    });
+  });
+}
 
 // 主题切换
 const themeToggle = document.getElementById('theme-toggle');
@@ -173,70 +186,146 @@ if (sitemapMarkers.length && detailName && detailDesc) {
   showZone(sitemapMarkers[0]);
 }
 
-// 天气小组件
-const weatherEl = document.getElementById('weather-widget');
-if (weatherEl) {
-  const locale = (document.documentElement.lang || 'es').split('-')[0] as AppLocale;
-  const labels: Record<AppLocale, string[]> = {
-    zh: ['低', '中等', '高', '极高', '危险'],
-    en: ['Low', 'Moderate', 'High', 'Very High', 'Extreme'],
-    es: ['Bajo', 'Moderado', 'Alto', 'Muy Alto', 'Extremo'],
-    it: ['Basso', 'Moderato', 'Alto', 'Molto Alto', 'Estremo'],
-  };
-  const titles: Record<AppLocale, string> = {
-    zh: '蒂尔卡拉实时天气',
-    en: 'Live Weather in Tilcara',
-    es: 'Clima en Tilcara',
-    it: 'Meteo a Tilcara',
-  };
-  const metaLabels: Record<AppLocale, { temp: string; precip: string; uv: string; sunrise: string; sunset: string }> = {
-    zh: { temp: '气温', precip: '降水', uv: '紫外线', sunrise: '日出', sunset: '日落' },
-    en: { temp: 'Temp', precip: 'Precip', uv: 'UV', sunrise: 'Sunrise', sunset: 'Sunset' },
-    es: { temp: 'Temp.', precip: 'Precip.', uv: 'UV', sunrise: 'Amanecer', sunset: 'Atardecer' },
-    it: { temp: 'Temp.', precip: 'Prec.', uv: 'UV', sunrise: 'Alba', sunset: 'Tramonto' },
-  };
-  const msgs: Record<AppLocale, (uv: string) => string> = {
-    zh: (uv) => `当前紫外线指数：${uv}。蒂尔卡拉位于海拔约2,465米的高原，日照极强，请务必做好防晒！`,
-    en: (uv) => `Current UV Index: ${uv}. Tilcara sits at ~2,465m altitude with intense sun — sunscreen is essential!`,
-    es: (uv) => `Índice UV actual: ${uv}. ¡Tilcara está a ~2.465m de altura, use protector solar!`,
-    it: (uv) => `Indice UV attuale: ${uv}. Tilcara è a ~2.465m di altitudine, il sole è forte — usa la crema solare!`,
-  };
-  const colors = ['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1'];
-  fetch(
-    'https://api.open-meteo.com/v1/forecast?latitude=-23.58&longitude=-65.40&current=temperature_2m,precipitation,uv_index&daily=sunrise,sunset&timezone=auto'
-  )
-    .then((r) => r.json())
-    .then((data) => {
-      if (!data || !data.current) return;
-      const temp = data.current.temperature_2m;
-      const precip = data.current.precipitation;
-      const uv = data.current.uv_index;
-      const sunriseRaw = data.daily?.sunrise?.[0];
-      const sunsetRaw = data.daily?.sunset?.[0];
-      const sunrise = sunriseRaw ? new Date(sunriseRaw).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
-      const sunset = sunsetRaw ? new Date(sunsetRaw).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
-      let idx = 0;
-      if (uv >= 3 && uv < 6) idx = 1;
-      else if (uv >= 6 && uv < 8) idx = 2;
-      else if (uv >= 8 && uv < 11) idx = 3;
-      else if (uv >= 11) idx = 4;
-      const uvLevel = labels[locale][idx];
-      const uvColor = colors[idx];
-      const uvText = `${uv} (${uvLevel})`;
-      const meta = metaLabels[locale];
-      weatherEl.innerHTML = `
-        <h3 style="font-size:1.2rem;font-weight:700;color:var(--color-deep);display:flex;align-items:center;gap:0.5rem;margin:0;">${titles[locale]}</h3>
-        <div style="display:flex;flex-wrap:wrap;gap:1rem;margin:0.5rem 0;">
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.temp}: ${temp}°C</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.precip}: ${precip}mm</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;color:${uvColor};">${meta.uv}: ${uvText}</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.sunrise}: ${sunrise}</div>
-          <div style="background:#f8f9fa;padding:0.5rem 1rem;border-radius:8px;font-weight:600;">${meta.sunset}: ${sunset}</div>
-        </div>
-        <p style="margin:0;font-size:0.95rem;color:var(--color-earth);line-height:1.5;">${msgs[locale](uvText)}</p>
-      `;
-    })
-    .catch(() => {
-      /* ignore */
-    });
+// 天气模块：首屏由服务端渲染，这里做一次静默刷新以保持“实时”（20 分钟内不重复请求）
+const weatherBlock = document.getElementById('weather');
+if (weatherBlock) {
+  const REFRESH_KEY = 'gdd-weather-refresh';
+  const REFRESH_TTL = 20 * 60 * 1000;
+  let lastRefresh = 0;
+  try {
+    lastRefresh = Number(sessionStorage.getItem(REFRESH_KEY) || 0);
+  } catch {
+    /* ignore */
+  }
+
+  if (Date.now() - lastRefresh > REFRESH_TTL) {
+    const ds = weatherBlock.dataset;
+    const locale = (ds.locale || 'es') as AppLocale;
+    const labels = WEATHER_LABELS[locale];
+    const intl = ds.intl || 'es-AR';
+    const url =
+      `https://api.open-meteo.com/v1/forecast?latitude=${ds.lat}&longitude=${ds.lon}` +
+      '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day,uv_index' +
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,sunrise,sunset' +
+      '&timezone=America%2FArgentina%2FJujuy&forecast_days=7';
+
+    const dayName = (iso: string): string => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return new Date(y, (m || 1) - 1, d || 1).toLocaleDateString(intl, { weekday: 'short' });
+    };
+    const round = (v: unknown): number => {
+      const n = Number(v);
+      return Number.isFinite(n) ? Math.round(n) : 0;
+    };
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data: any) => {
+        const cur = data?.current;
+        const daily = data?.daily;
+        if (!cur || !daily || !Array.isArray(daily.time)) return;
+
+        const days = daily.time.slice(0, 7).map((t: string, i: number) => ({
+          date: t,
+          code: round(daily.weather_code?.[i]),
+          tMax: round(daily.temperature_2m_max?.[i]),
+          tMin: round(daily.temperature_2m_min?.[i]),
+          prob: round(daily.precipitation_probability_max?.[i]),
+          sum: Number(daily.precipitation_sum?.[i]) || 0,
+          uvMax: round(daily.uv_index_max?.[i]),
+          sunrise: String(daily.sunrise?.[i] || ''),
+          sunset: String(daily.sunset?.[i] || ''),
+        }));
+        const temp = round(cur.temperature_2m);
+        const feels = round(cur.apparent_temperature);
+        const humidity = round(cur.relative_humidity_2m);
+        const wind = round(cur.wind_speed_10m);
+        const uv = round(cur.uv_index);
+        const code = round(cur.weather_code);
+        const isDay = Number(cur.is_day) === 1;
+        const today =
+          days[0] ??
+          { date: '', code, tMax: temp, tMin: temp, prob: 0, sum: 0, uvMax: uv, sunrise: '', sunset: '' };
+        const idx = uvLevelIndex(uv);
+        const conditions = labels.conditions;
+        const uvLevels = labels.uvLevels;
+
+        const advice = buildWeatherAdvice(
+          {
+            code,
+            temp,
+            feelsLike: feels,
+            humidity,
+            wind,
+            uv,
+            isDay,
+            tMax: today.tMax,
+            tMin: today.tMin,
+            precipProb: today.prob,
+            precipSum: today.sum,
+            uvMax: today.uvMax,
+          },
+          locale
+        );
+
+        const metric = (label: string, value: string, color?: string): string =>
+          `<div class="weather-metric"><span class="weather-metric-label">${label}</span>` +
+          `<span class="weather-metric-value"${color ? ` style="color:${color}"` : ''}>${value}</span></div>`;
+
+        const html =
+          `<div class="weather-current">` +
+          `<div class="weather-now">` +
+          `<div class="weather-icon-lg">${weatherIcon(code, isDay)}</div>` +
+          `<div class="weather-now-text">` +
+          `<div class="weather-temp">${temp}<span>°C</span></div>` +
+          `<div class="weather-cond">${conditions[weatherKey(code)] || ''}</div>` +
+          `<div class="weather-now-sub">${labels.feelsLike} ${feels}°C</div>` +
+          `</div></div>` +
+          `<div class="weather-metrics">` +
+          metric(labels.humidity, `${humidity}%`) +
+          metric(labels.wind, `${wind} km/h`) +
+          metric(labels.chanceOfRain, `${today.prob}%`) +
+          metric(labels.uvIndex, `${uv} · ${uvLevels[idx] || ''}`, UV_COLORS[idx]) +
+          metric(labels.sunrise, today.sunrise ? today.sunrise.slice(11, 16) : '—') +
+          metric(labels.sunset, today.sunset ? today.sunset.slice(11, 16) : '—') +
+          `</div>` +
+          `</div>` +
+          renderAdviceHtml(advice) +
+          `<div class="weather-forecast">` +
+          `<div class="weather-forecast-title">${labels.forecastTitle}</div>` +
+          `<div class="weather-days">` +
+          days
+            .map(
+              (d: any, i: number) =>
+                `<div class="weather-day">` +
+                `<div class="weather-day-name">${i === 0 ? labels.today : dayName(d.date)}</div>` +
+                `<div class="weather-day-icon">${weatherIcon(d.code, true)}</div>` +
+                `<div class="weather-day-rain">${d.prob}%</div>` +
+                `<div class="weather-day-temps"><span class="tmax">${d.tMax}°</span><span class="tmin">${d.tMin}°</span></div>` +
+                `</div>`
+            )
+            .join('') +
+          `</div></div>`;
+
+        const live = weatherBlock.querySelector('.weather-live');
+        if (live) live.innerHTML = html;
+        const updated = weatherBlock.querySelector('.weather-updated');
+        if (updated) {
+          updated.textContent = `${labels.updated || ''}: ${new Date().toLocaleString(intl, {
+            day: '2-digit',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`;
+        }
+        try {
+          sessionStorage.setItem(REFRESH_KEY, String(Date.now()));
+        } catch {
+          /* ignore */
+        }
+      })
+      .catch(() => {
+        /* 静默失败：保留服务端渲染的数据 */
+      });
+  }
 }

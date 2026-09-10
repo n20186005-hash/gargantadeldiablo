@@ -2,6 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { translations, type Locale } from '../../i18n/translations';
 import { getSeo } from '../../lib/seo';
+import { ENTITY, entityContent, ENTITY_FAQ, IMAGE_CREDIT, heroAlt, landmarkAlt, galleryAlt } from '../../lib/entity';
+import { FACILITIES } from '../../lib/practical';
+import { DEEP_DIVE } from '../../lib/deepdive';
+import { getWeather } from '../../lib/weather';
+import { WEATHER_LABELS } from '../../lib/weather-labels';
+import { UV_COLORS, uvLevelIndex, weatherIcon, weatherKey } from '../../lib/weather-codes';
+import { buildWeatherAdvice, renderAdviceHtml } from '../../lib/weather-advice';
 import galleryImagesData from '../../gallery-data.json';
 
 export function getStaticPaths() {
@@ -11,7 +18,65 @@ export function getStaticPaths() {
 const { locale } = Astro.params as { locale: Locale };
 const t = translations[locale];
 const seo = getSeo(locale);
-const MAPS_URL = 'https://maps.app.goo.gl/5omkpMV3k3cC52ku5';
+const ent = entityContent[locale];
+const extraFaq = ENTITY_FAQ[locale];
+const imageCredit = IMAGE_CREDIT[locale];
+const facilities = FACILITIES[locale];
+const deep = DEEP_DIVE[locale];
+const wl = WEATHER_LABELS[locale];
+const weather = await getWeather();
+const MAPS_URL = ENTITY.mapsShareUrl;
+const GOVT_TOURISM_URL = ENTITY.govtTourismUrl;
+
+const INTL_LOCALE: Record<Locale, string> = { es: 'es-AR', en: 'en-US', zh: 'zh-CN', it: 'it-IT' };
+
+const NAV_EXTRA: Record<Locale, { weather: string; facilities: string; legends: string }> = {
+  es: { weather: 'Clima', facilities: 'Servicios', legends: 'Leyendas' },
+  en: { weather: 'Weather', facilities: 'Facilities', legends: 'Legends' },
+  zh: { weather: '天气', facilities: '实用设施', legends: '传说故事' },
+  it: { weather: 'Meteo', facilities: 'Servizi', legends: 'Leggende' },
+};
+const navExtra = NAV_EXTRA[locale];
+
+/** 把 .jpg 路径换成对应的 .webp（图片压缩脚本会生成同名 WebP） */
+function webp(src: string): string {
+  return src.replace(/\.jpe?g$/i, '.webp');
+}
+
+function weekdayShort(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, (m || 1) - 1, d || 1);
+  return dt.toLocaleDateString(INTL_LOCALE[locale], { weekday: 'short' });
+}
+
+function formatUpdated(iso: string): string {
+  const dt = new Date(iso);
+  if (Number.isNaN(dt.getTime())) return '';
+  return dt.toLocaleString(INTL_LOCALE[locale], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+const todayWeather = weather?.daily?.[0];
+/** 面向游客的「可执行建议」：穿搭 / 游玩 / 随身 / 风险，由天气条件动态生成 */
+const advice = weather
+  ? buildWeatherAdvice(
+      {
+        code: weather.code,
+        temp: weather.temp,
+        feelsLike: weather.feelsLike,
+        humidity: weather.humidity,
+        wind: weather.wind,
+        uv: weather.uv,
+        isDay: weather.isDay,
+        tMax: todayWeather?.tMax ?? weather.temp,
+        tMin: todayWeather?.tMin ?? weather.temp,
+        precipProb: todayWeather?.precipProb ?? 0,
+        precipSum: todayWeather?.precipSum ?? 0,
+        uvMax: todayWeather?.uvMax ?? weather.uv,
+      },
+      locale
+    )
+  : null;
+const adviceHtml = advice ? renderAdviceHtml(advice) : '';
 const GALLERY_PLAN = [
   { key: 'gorge', from: 0, to: 6 },
   { key: 'waterfall', from: 7, to: 11 },
@@ -34,6 +99,54 @@ const MARKER_POS: Record<string, { top: string; left: string }> = {
 };
 
 const LANG_LABELS: Record<Locale, string> = { zh: '中文', en: 'EN', es: 'ES', it: 'IT' };
+
+/**
+ * 站内锚文本内链
+ * 策略：锚文本统一携带地域词（Garganta del Diablo Tilcara / Camino a la Garganta del Diablo /
+ * Trekking en Jujuy），避免「clic aquí」这类无信息锚文本，强化页面内实体与主题关联，
+ * 同时承担长尾词的站内语义覆盖。
+ */
+const QUICK_LINKS_TITLE: Record<Locale, string> = {
+  zh: '快速跳转',
+  en: 'Jump to',
+  es: 'Ir a',
+  it: 'Vai a',
+};
+
+const QUICK_LINKS: Record<Locale, { label: string; href: string }[]> = {
+  zh: [
+    { label: '如何前往魔鬼之喉：从蒂尔卡拉镇中心出发', href: '#transportation' },
+    { label: '魔鬼之喉峡谷徒步路线与涉水路段', href: '#monuments' },
+    { label: '门票、开放时间与游览时长', href: '#visiting' },
+    { label: '蒂尔卡拉最佳旅行季节与高原天气', href: '#seasons' },
+    { label: '峡谷地质成因与狭缝岩壁', href: '#geology' },
+    { label: '伊瓜苏「魔鬼之喉」与蒂尔卡拉的区别', href: '#compare' },
+  ],
+  en: [
+    { label: 'Getting to the Garganta del Diablo from Tilcara town centre', href: '#transportation' },
+    { label: 'Trekking in Jujuy: the gorge trail and stream crossings', href: '#monuments' },
+    { label: 'Entrance fee, opening hours and how long it takes', href: '#visiting' },
+    { label: 'Best season to visit Tilcara and high-altitude weather', href: '#seasons' },
+    { label: 'How the gorge was formed: geology of the slot canyon', href: '#geology' },
+    { label: 'Iguazu vs. Tilcara: which “Garganta del Diablo”?', href: '#compare' },
+  ],
+  es: [
+    { label: 'Camino a la Garganta del Diablo desde el centro de Tilcara', href: '#transportation' },
+    { label: 'Trekking en Jujuy: el sendero del cañón y los vadeos', href: '#monuments' },
+    { label: 'Entrada, horarios y duración de la visita', href: '#visiting' },
+    { label: 'Mejor época para visitar Tilcara y clima de altura', href: '#seasons' },
+    { label: 'Geología de la Garganta del Diablo: cómo se formó el cañón', href: '#geology' },
+    { label: '¿Garganta del Diablo de Iguazú o de Tilcara?', href: '#compare' },
+  ],
+  it: [
+    { label: 'Come arrivare alla Garganta del Diablo dal centro di Tilcara', href: '#transportation' },
+    { label: 'Trekking in Jujuy: il sentiero della gola e i guadi', href: '#monuments' },
+    { label: 'Biglietto, orari e durata della visita', href: '#visiting' },
+    { label: 'Periodo migliore per visitare Tilcara e clima d’altura', href: '#seasons' },
+    { label: 'Geologia della Garganta del Diablo: come si è formata la gola', href: '#geology' },
+    { label: 'Garganta del Diablo: Iguazú o Tilcara?', href: '#compare' },
+  ],
+};
 
 const GOOGLE_REVIEWS = [
   { name: 'Carlos M.', avatar: 'CM', rating: 5, date: '2025-06-12', text: 'Impresionante cañón natural. La caminata hasta la cascada es inolvidable y el sonido del agua retumbando entre las paredes de roca te deja sin palabras. Imperdible si estás en Tilcara.' },
@@ -445,21 +558,26 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- 导航 -->
   <nav class="site-nav" id="site-nav">
     <div style="display:flex;align-items:center;gap:1.5rem;">
-      <span style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:#fff;">Garganta del Diablo</span>
+      <span style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:#fff;">Garganta del Diablo<span style="font-family:var(--font-body);font-size:0.8rem;font-weight:500;opacity:0.75;margin-left:0.5rem;">· {ENTITY.city}, {ENTITY.province}</span></span>
     </div>
     <div style="display:flex;align-items:center;gap:2rem;">
       <div class="nav-links">
+        <a href="#entity">{ent.navEntity}</a>
         <a href="#compare">{extra.compareNav}</a>
         <a href="#history">{t.nav.history}</a>
         <a href="#architecture">{t.nav.architecture}</a>
         <a href="#monuments">{t.nav.monuments}</a>
         <a href="#eco">{t.nav.eco}</a>
         <a href="#visiting">{t.nav.visiting}</a>
+        <a href="#weather">{navExtra.weather}</a>
+        <a href="#facilities">{navExtra.facilities}</a>
+        <a href="#legends">{navExtra.legends}</a>
         <a href="#transportation">{t.nav.transportation}</a>
         <a href="#gallery">{t.nav.gallery}</a>
         <a href="#reviews">{t.nav.reviews}</a>
         <a href="#faq">{t.nav.faq}</a>
         <a href="#location">{t.nav.location}</a>
+        <a href="#sources">{ent.navSources}</a>
         <a href="#sitemap">{t.siteMap.title}</a>
         <a href="#itinerary">{t.itinerary.title}</a>
       </div>
@@ -485,7 +603,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
       </button>
       <div class="lang-switcher">
         {
-          (['zh', 'en', 'es', 'it'] as Locale[]).map((l) => (
+          (['es', 'zh', 'en', 'it'] as Locale[]).map((l) => (
             <button class={l === locale ? 'lang-btn active' : 'lang-btn'} data-locale={l} type="button">
               {LANG_LABELS[l]}
             </button>
@@ -497,12 +615,17 @@ const extra = PAGE_ENHANCEMENTS[locale];
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg">
+      <picture>
+        <source type="image/webp" srcset={webp('/gallery/garganta-del-diablo-1.jpg')} />
+        <img class="hero-bg-img" src="/gallery/garganta-del-diablo-1.jpg" alt={heroAlt(locale)} loading="eager" fetchpriority="high" />
+      </picture>
+    </div>
     <div class="hero-texture"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-tagline">{t.hero.tagline}</p>
-      <h1 class="hero-title">{t.hero.title}</h1>
+      <h1 class="hero-title">{t.hero.title}<span class="hero-title-city">{ent.heroCitySuffix}</span></h1>
       <p class="hero-subtitle">{t.hero.subtitle}</p>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;">
         {
@@ -515,6 +638,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
       </div>
       <div class="hero-description">
         <p>📍 {t.hero.description.address}</p>
+        <p>🧭 {ENTITY.plusCode}</p>
         <p>📞 {t.hero.description.phone}</p>
         <p>🏛️ {t.hero.description.category}</p>
       </div>
@@ -533,9 +657,53 @@ const extra = PAGE_ENHANCEMENTS[locale];
       <div class="hero-meta">
         <div class="hero-rating">4.7</div>
         <div class="hero-stars">★ ★ ★ ★ ★</div>
-        <div class="hero-reviews">5,699 {t.rating.reviews} · {t.rating.source}</div>
+        <div class="hero-reviews">{ENTITY.reviewCountLabel} {t.rating.reviews} · {t.rating.source}</div>
       </div>
     </a>
+  </section>
+
+  <!-- Entity Breadcrumb (geographic hierarchy) -->
+  <nav class="entity-breadcrumb" aria-label={ent.breadcrumbAria}>
+    <ol>
+      <li><a href={`/${locale}`}>{ent.breadcrumbHome}</a></li>
+      <li><span>{ENTITY.fullName}</span></li>
+      <li><span>{ENTITY.city}</span></li>
+      <li><span>{ENTITY.province}</span></li>
+      <li><span>{ENTITY.country}</span></li>
+    </ol>
+  </nav>
+
+  <!-- Entity Overview (semantic entity binding) -->
+  <section id="entity" class="section entity-section">
+    <div class="reveal">
+      <p class="section-label">A</p>
+      <p class="about-text entity-lead" set:html={renderText(ent.intro)}></p>
+    </div>
+    <!-- 站内锚文本内链：锚文本携带地域词，强化实体关联 -->
+    <nav class="reveal quick-links" aria-label={QUICK_LINKS_TITLE[locale]}>
+      <span class="quick-links-label">{QUICK_LINKS_TITLE[locale]}</span>
+      <div class="quick-links-list">
+        {QUICK_LINKS[locale].map((link) => (
+          <a class="quick-link" href={link.href}>{link.label}</a>
+        ))}
+      </div>
+    </nav>
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">{ent.aboutTitle}</h2>
+      <p class="about-text" set:html={renderText(ent.aboutText)}></p>
+    </div>
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">{ent.locationTitle}</h2>
+      <p class="about-text" set:html={renderText(ent.locationText)}></p>
+    </div>
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">{ent.landmarksTitle}</h2>
+      <p class="about-text" set:html={renderText(ent.landmarksText)}></p>
+    </div>
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">{ent.historyTitle}</h2>
+      <p class="about-text" set:html={renderText(ent.historyText)}></p>
+    </div>
   </section>
 
   <!-- Name Disambiguation -->
@@ -783,13 +951,19 @@ const extra = PAGE_ENHANCEMENTS[locale];
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;">
         <div>
           <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.1);margin-bottom:1rem;">
-            <img src="https://gargantadeldiablo.com/gallery/garganta-del-diablo-6.jpg" alt="Garganta del Diablo gorge walls" style="width:100%;height:auto;display:block;" />
+            <picture>
+              <source type="image/webp" srcset={webp('/gallery/garganta-del-diablo-6.jpg')} />
+              <img src="/gallery/garganta-del-diablo-6.jpg" alt={landmarkAlt(locale, 1)} loading="lazy" style="width:100%;height:auto;display:block;" />
+            </picture>
           </div>
           <p style="text-align:center;font-size:0.95rem;color:var(--color-earth-soft);font-weight:600;">{t.contrast.before}</p>
         </div>
         <div>
           <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.1);margin-bottom:1rem;">
-            <img src="https://gargantadeldiablo.com/gallery/garganta-del-diablo-20.jpg" alt="Garganta del Diablo panoramic view" style="width:100%;height:auto;display:block;" />
+            <picture>
+              <source type="image/webp" srcset={webp('/gallery/garganta-del-diablo-20.jpg')} />
+              <img src="/gallery/garganta-del-diablo-20.jpg" alt={landmarkAlt(locale, 2)} loading="lazy" style="width:100%;height:auto;display:block;" />
+            </picture>
           </div>
           <p style="text-align:center;font-size:0.95rem;color:var(--color-earth-soft);font-weight:600;">{t.contrast.after}</p>
         </div>
@@ -853,7 +1027,201 @@ const extra = PAGE_ENHANCEMENTS[locale];
         </div>
       </div>
       <div class="reveal">
-        <div id="weather-widget"></div>
+        <div
+          id="weather"
+          class="weather-block"
+          data-lat={ENTITY.latitude}
+          data-lon={ENTITY.longitude}
+          data-intl={INTL_LOCALE[locale]}
+          data-locale={locale}
+        >
+          <div class="weather-head">
+            <h3 class="weather-title">{wl.sectionTitle}</h3>
+            <p class="weather-intro">{wl.sectionIntro}</p>
+          </div>
+          <div class="weather-live">
+            {weather ? (
+              <>
+                <div class="weather-current">
+                  <div class="weather-now">
+                    <div class="weather-icon-lg">{weatherIcon(weather.code, weather.isDay)}</div>
+                    <div class="weather-now-text">
+                      <div class="weather-temp">{weather.temp}<span>°C</span></div>
+                      <div class="weather-cond">{wl.conditions[weatherKey(weather.code)]}</div>
+                      <div class="weather-now-sub">{wl.feelsLike} {weather.feelsLike}°C</div>
+                    </div>
+                  </div>
+                  <div class="weather-metrics">
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.humidity}</span><span class="weather-metric-value">{weather.humidity}%</span></div>
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.wind}</span><span class="weather-metric-value">{weather.wind} km/h</span></div>
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.chanceOfRain}</span><span class="weather-metric-value">{todayWeather?.precipProb ?? 0}%</span></div>
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.uvIndex}</span><span class="weather-metric-value" style={`color:${UV_COLORS[uvLevelIndex(weather.uv)]}`}>{weather.uv} · {wl.uvLevels[uvLevelIndex(weather.uv)]}</span></div>
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.sunrise}</span><span class="weather-metric-value">{todayWeather?.sunrise?.slice(11, 16) || '—'}</span></div>
+                    <div class="weather-metric"><span class="weather-metric-label">{wl.sunset}</span><span class="weather-metric-value">{todayWeather?.sunset?.slice(11, 16) || '—'}</span></div>
+                  </div>
+                </div>
+                <div class="weather-advice-panel" set:html={adviceHtml} />
+                <div class="weather-forecast">
+                  <div class="weather-forecast-title">{wl.forecastTitle}</div>
+                  <div class="weather-days">
+                    {weather.daily.map((d, i) => (
+                      <div class="weather-day">
+                        <div class="weather-day-name">{i === 0 ? wl.today : weekdayShort(d.date)}</div>
+                        <div class="weather-day-icon">{weatherIcon(d.code, true)}</div>
+                        <div class="weather-day-rain">{d.precipProb}%</div>
+                        <div class="weather-day-temps"><span class="tmax">{d.tMax}°</span><span class="tmin">{d.tMin}°</span></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p class="weather-unavailable">{wl.unavailable}</p>
+            )}
+          </div>
+          <div class="weather-foot">
+            <span class="weather-updated">{weather ? `${wl.updated}: ${formatUpdated(weather.fetchedAt)}` : ''}</span>
+            <span class="weather-disclaimer">{wl.disclaimer}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Facilities (neutral, type-only) -->
+  <section id="facilities" class="section" style="background:var(--color-cream);">
+    <div class="reveal">
+      <p class="section-label">07</p>
+      <h2 class="section-title">{facilities.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:1rem;">{facilities.intro}</p>
+      <p class="facilities-note">{facilities.neutrality}</p>
+    </div>
+    <div class="reveal">
+      <div class="facilities-grid">
+        {
+          facilities.items.map((f) => (
+            <article class="facility-card">
+              <div class="facility-icon" aria-hidden="true">{f.icon}</div>
+              <h3 class="facility-title">{f.title}</h3>
+              <p class="facility-text">{f.text}</p>
+              <p class="facility-note">{f.note}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Legends & Folklore (08) -->
+  <section id="legends" class="section">
+    <div class="reveal">
+      <p class="section-label">08</p>
+      <h2 class="section-title">{deep.legends.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:2rem;">{deep.legends.intro}</p>
+    </div>
+    <div class="reveal">
+      <div class="deepdive-grid">
+        {
+          deep.legends.items.map((item) => (
+            <article class="deepdive-card">
+              <h3 class="deepdive-title">{item.name}</h3>
+              <p class="deepdive-text">{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Geology & Climate (09) -->
+  <section id="geology" class="section" style="background:rgba(0,0,0,0.02);">
+    <div class="reveal">
+      <p class="section-label">09</p>
+      <h2 class="section-title">{deep.geology.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:2rem;">{deep.geology.intro}</p>
+    </div>
+    <div class="reveal">
+      <div class="deepdive-grid">
+        {
+          deep.geology.items.map((item) => (
+            <article class="deepdive-card">
+              <h3 class="deepdive-title">{item.name}</h3>
+              <p class="deepdive-text">{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Flora, Fauna & Ecology (10) -->
+  <section id="nature" class="section">
+    <div class="reveal">
+      <p class="section-label">10</p>
+      <h2 class="section-title">{deep.nature.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:2rem;">{deep.nature.intro}</p>
+    </div>
+    <div class="reveal">
+      <div class="deepdive-grid">
+        {
+          deep.nature.items.map((item) => (
+            <article class="deepdive-card">
+              <h3 class="deepdive-title">{item.name}</h3>
+              <p class="deepdive-text">{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Glossary (11) -->
+  <section id="glossary" class="section" style="background:var(--color-cream);">
+    <div class="reveal">
+      <p class="section-label">11</p>
+      <h2 class="section-title">{deep.glossary.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:2rem;">{deep.glossary.intro}</p>
+    </div>
+    <div class="reveal">
+      <dl class="glossary-list">
+        {
+          deep.glossary.terms.map((term) => (
+            <div class="glossary-item">
+              <dt class="glossary-term">{term.term}</dt>
+              <dd class="glossary-def">{term.definition}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Seasons (12) -->
+  <section id="seasons" class="section">
+    <div class="reveal">
+      <p class="section-label">12</p>
+      <h2 class="section-title">{deep.seasons.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:2rem;">{deep.seasons.intro}</p>
+    </div>
+    <div class="reveal">
+      <div class="seasons-grid">
+        {
+          deep.seasons.rows.map((row) => (
+            <article class="season-row">
+              <div class="season-head">
+                <span class="season-name">{row.season}</span>
+                <span class="season-months">{row.months}</span>
+              </div>
+              <p class="season-text">{row.text}</p>
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -861,7 +1229,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Transportation -->
   <section id="transportation" class="section">
     <div class="reveal">
-      <p class="section-label">07</p>
+      <p class="section-label">13</p>
       <h2 class="section-title">{t.transportation.title}</h2>
       <div class="section-divider"></div>
     </div>
@@ -938,7 +1306,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Gallery -->
   <section id="gallery" class="section">
     <div class="reveal">
-      <p class="section-label">08</p>
+      <p class="section-label">14</p>
       <h2 class="section-title">{t.gallery.title}</h2>
       <div class="section-divider"></div>
     </div>
@@ -960,7 +1328,10 @@ const extra = PAGE_ENHANCEMENTS[locale];
               {
                 galleryImages.map((item, i) => (
                   <div class="gallery-item" data-index={i} data-category={item.category}>
-                    <img src={item.src} alt={`Garganta del Diablo gallery image ${i + 1}`} loading="lazy" />
+                    <picture>
+                      <source type="image/webp" srcset={webp(item.src)} />
+                      <img src={item.src} alt={galleryAlt(locale, i + 1)} loading="lazy" />
+                    </picture>
                   </div>
                 ))
               }
@@ -984,7 +1355,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Reviews -->
   <section id="reviews" class="section" style="background:linear-gradient(180deg,var(--color-cream) 0%,#e8e2d6 100%);">
     <div class="reveal">
-      <p class="section-label">09</p>
+      <p class="section-label">15</p>
       <h2 class="section-title">{t.reviews.title}</h2>
       <p class="section-subtitle">{t.reviews.subtitle}</p>
       <div class="section-divider"></div>
@@ -1046,7 +1417,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <section id="faq" class="section">
     <div class="section">
       <div class="reveal">
-        <p class="section-label">10</p>
+        <p class="section-label">16</p>
         <h2 class="section-title">{t.faq.title}</h2>
         <p class="section-subtitle">{t.faq.subtitle}</p>
         <div class="section-divider"></div>
@@ -1070,6 +1441,21 @@ const extra = PAGE_ENHANCEMENTS[locale];
               </div>
             ))
           }
+          {
+            extraFaq.map((item) => (
+              <div class="faq-item">
+                <button class="faq-question" data-faq type="button">
+                  <span style="color:var(--color-deep);font-weight:600;">{item.q}</span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon">
+                    <path d="M6 9l6 6 6-6"></path>
+                  </svg>
+                </button>
+                <div class="faq-answer">
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
@@ -1078,7 +1464,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Location -->
   <section id="location" class="section">
     <div class="reveal">
-      <p class="section-label">11</p>
+      <p class="section-label">17</p>
       <h2 class="section-title">{t.location.title}</h2>
       <div class="section-divider"></div>
     </div>
@@ -1086,18 +1472,36 @@ const extra = PAGE_ENHANCEMENTS[locale];
       <div class="location-section">
         <div class="location-map-container">
           <iframe
-            src="https://www.google.com/maps?q=Garganta%20del%20Diablo%20Tilcara%20Jujuy%20Argentina&output=embed"
-            width="800"
-            height="600"
+            src={ENTITY.mapsEmbedSrc}
+            width="100%"
+            height="450"
             style="border:0;"
             allowfullscreen
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Garganta del Diablo Location Map"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title={ent.mapEmbedTitle}
           >
           </iframe>
         </div>
         <div class="location-info">
+          <dl class="location-nap">
+            <div>
+              <dt>{ent.napNameLabel}</dt>
+              <dd>{ENTITY.fullName}</dd>
+            </div>
+            <div>
+              <dt>{ent.napAddressLabel}</dt>
+              <dd>{ENTITY.fullName}, {ENTITY.city}, {ENTITY.province}, {ENTITY.country}</dd>
+            </div>
+            <div>
+              <dt>{ent.napPlusCodeLabel}</dt>
+              <dd>{ENTITY.plusCode}</dd>
+            </div>
+            <div>
+              <dt>{ent.napGeoLabel}</dt>
+              <dd>{ENTITY.latitude}, {ENTITY.longitude}</dd>
+            </div>
+          </dl>
           <p class="location-address" style="white-space:pre-line;">{t.location.address}</p>
           <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="maps-link">
             {t.location.openMaps}
@@ -1105,6 +1509,10 @@ const extra = PAGE_ENHANCEMENTS[locale];
               <path d="M7 17L17 7M17 7H7M17 7V17"></path>
             </svg>
           </a>
+          <p class="location-official">
+            {ent.officialUpdates}{' '}
+            <a href={GOVT_TOURISM_URL} target="_blank" rel="noopener noreferrer">{ent.officialTourismLabel}</a>.
+          </p>
         </div>
       </div>
     </div>
@@ -1113,7 +1521,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Interactive Site Map -->
   <section id="sitemap" class="section">
     <div class="reveal">
-      <p class="section-label">12</p>
+      <p class="section-label">18</p>
       <h2 class="section-title">{t.siteMap.title}</h2>
       <p class="about-text" style="white-space:pre-line;margin-bottom:1rem;" set:html={renderText(t.siteMap.intro)}></p>
       <div class="sitemap-hint">{t.siteMap.hint}</div>
@@ -1155,7 +1563,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
   <!-- Itinerary -->
   <section id="itinerary" class="section" style="background:rgba(0,0,0,0.02);">
     <div class="reveal">
-      <p class="section-label">13</p>
+      <p class="section-label">19</p>
       <h2 class="section-title">{t.itinerary.title}</h2>
       <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.itinerary.intro)}></p>
     </div>
@@ -1177,8 +1585,38 @@ const extra = PAGE_ENHANCEMENTS[locale];
     </div>
   </section>
 
+  <!-- Sources & Image Credits (E-E-A-T) -->
+  <section id="sources" class="section sources-section">
+    <div class="reveal">
+      <p class="section-label">20</p>
+      <h2 class="section-title">{ent.sourcesTitle}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" set:html={renderText(ent.sourcesIntro)}></p>
+    </div>
+    <div class="reveal">
+      <ul class="sources-list">
+        {
+          ent.sources.map((source) => (
+            <li class="source-item">
+              <a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>
+              <span class="source-desc">{source.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="reveal">
+      <p class="image-credit">{imageCredit}</p>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="site-footer">
+    <div class="footer-nap">
+      <p class="footer-nap-name">{ENTITY.fullName}</p>
+      <p class="footer-nap-line">{ENTITY.fullName}, {ENTITY.city}, {ENTITY.province}, {ENTITY.country}</p>
+      <p class="footer-nap-line">{ENTITY.plusCode} · {ENTITY.latitude}, {ENTITY.longitude}</p>
+    </div>
     <div class="footer-links">
       <p class="footer-links-title">{t.footer.linksTitle}</p>
       <div class="footer-links-grid">
@@ -1201,6 +1639,7 @@ const extra = PAGE_ENHANCEMENTS[locale];
     </div>
     <p class="footer-text" style="margin-top:2rem;font-size:0.9rem;font-weight:600;color:var(--color-gold);">{t.footer.callToAction}</p>
     <p class="footer-text" style="margin-top:1rem;white-space:pre-line;">{t.footer.text}</p>
+    <p class="footer-credit">{imageCredit}</p>
   </footer>
 
   <!-- Lightbox -->

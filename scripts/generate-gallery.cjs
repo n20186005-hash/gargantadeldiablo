@@ -5,7 +5,8 @@ const galleryDir = path.join(__dirname, '../public/gallery');
 const files = fs.readdirSync(galleryDir);
 
 const images = files
-  .filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f))
+  // 只收录原图（jpg/png）；压缩脚本生成的 .webp 作为 <source> 备用，不计入图集条目
+  .filter(f => /\.(jpe?g|png)$/i.test(f))
   .filter(f => fs.existsSync(path.join(galleryDir, f)))
   .map(f => `/gallery/${f}`)
   .sort((a, b) => {

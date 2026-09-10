@@ -194,7 +194,7 @@ export const translations: Record<Locale, Translations> = {
       ]
     },
     transportation: {
-      title: "精准交通指南",
+      title: "如何前往魔鬼之喉：从蒂尔卡拉出发",
       airport: { title: "✈️ 从胡胡伊省首府 / 机场出发", content: "最近的机场是胡胡伊国际机场（Gobernador Horacio Guzmán，代码 JUJ），距蒂尔卡拉约 113 公里。亦可通过萨尔塔机场（SLA）中转，距蒂尔卡拉约 210 公里。", options: [
         { name: "自驾 / 租车（推荐）", price: "约 1.5 小时车程", time: "113 公里", steps: ["从胡胡伊机场沿 9 号国道（RN-9）向北行驶", "沿乌马瓦卡峡谷北上，途经沃尔坎（Volcán）、通巴亚（Tumbaya）等小镇", "到达蒂尔卡拉镇后，按路标指示前往 Garganta del Diablo 入口"] },
         { name: "包车 / 接送（机场或市区出发）", price: "约 1.5–2 小时（直达）", time: "约 113 公里", steps: ["在胡胡伊机场或圣萨尔瓦多德胡胡伊（San Salvador de Jujuy）预约接送服务", "可选择直达蒂尔卡拉镇，或在行程中顺路停靠观景点", "抵达蒂尔卡拉后，再前往 Garganta del Diablo 入口"] },
@@ -394,7 +394,7 @@ export const translations: Record<Locale, Translations> = {
       ]
     },
     transportation: {
-      title: "Getting There",
+      title: "Getting to the Garganta del Diablo from Tilcara",
       airport: { title: "✈️ From Jujuy Capital / Airport", content: "The nearest airport is Gobernador Horacio Guzmán International Airport (JUJ), about 113 km from Tilcara. Salta Airport (SLA) is an alternative, about 210 km away.", options: [
         { name: "Self-drive / Rental Car (Recommended)", price: "approx. 1.5 hrs", time: "113 km", steps: ["From Jujuy Airport, take National Route 9 (RN-9) northbound", "Drive through the Quebrada de Humahuaca, passing Volcán, Tumbaya and other villages", "Arrive in Tilcara and follow signs to the Garganta del Diablo trailhead"] },
         { name: "Private transfer (airport or city pick-up)", price: "approx. 1.5–2 hrs", time: "≈113 km", steps: ["Book a transfer from JUJ airport or San Salvador de Jujuy", "Travel directly to Tilcara (optionally with scenic stops)", "From Tilcara, continue to the trailhead"] },
@@ -594,7 +594,7 @@ export const translations: Record<Locale, Translations> = {
       ]
     },
     transportation: {
-      title: "Cómo Llegar",
+      title: "Cómo Llegar a la Garganta del Diablo desde Tilcara",
       airport: { title: "✈️ Desde la Capital / Aeropuerto de Jujuy", content: "El aeropuerto más cercano es el Aeropuerto Internacional Gobernador Horacio Guzmán (JUJ), a unos 113 km de Tilcara. El Aeropuerto de Salta (SLA) es una alternativa, a unos 210 km.", options: [
         { name: "Auto propio / alquilado (Recomendado)", price: "aprox. 1,5 hs", time: "113 km", steps: ["Desde el aeropuerto de Jujuy tomar la Ruta Nacional 9 (RN-9) hacia el norte", "Recorrer la Quebrada de Humahuaca pasando por Volcán, Tumbaya y otros pueblos", "Llegar a Tilcara y seguir las indicaciones hacia el ingreso de la Garganta del Diablo"] },
         { name: "Traslado privado (aeropuerto o ciudad)", price: "aprox. 1,5–2 hs", time: "≈113 km", steps: ["Reservá un traslado desde JUJ o desde San Salvador de Jujuy", "Viaje directo a Tilcara (con paradas escénicas opcionales)", "Desde Tilcara continuá hasta el ingreso"] },
@@ -794,7 +794,7 @@ export const translations: Record<Locale, Translations> = {
       ]
     },
     transportation: {
-      title: "Come Arrivare",
+      title: "Come arrivare alla Garganta del Diablo da Tilcara",
       airport: { title: "✈️ Dalla Capitale / Aeroporto di Jujuy", content: "L'aeroporto più vicino è l'Aeroporto Internazionale Gobernador Horacio Guzmán (JUJ), a circa 113 km da Tilcara. L'Aeroporto di Salta (SLA) è un'alternativa, a circa 210 km.", options: [
         { name: "Auto propria / a noleggio (Consigliato)", price: "ca. 1,5 ore", time: "113 km", steps: ["Dall'aeroporto di Jujuy prendere la Ruta Nacional 9 (RN-9) verso nord", "Percorrere la Quebrada de Humahuaca passando per Volcán, Tumbaya e altri villaggi", "Arrivare a Tilcara e seguire le indicazioni per l'ingresso della Garganta del Diablo"] },
         { name: "Transfer privato (aeroporto o città)", price: "ca. 1,5–2 ore", time: "≈113 km", steps: ["Prenota un transfer da JUJ o da San Salvador de Jujuy", "Viaggio diretto fino a Tilcara (con eventuali soste panoramiche)", "Da Tilcara prosegui fino all'ingresso del sentiero"] },

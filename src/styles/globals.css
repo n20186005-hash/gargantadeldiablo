@@ -169,10 +169,8 @@ body {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('https://gargantadeldiablo.com/gallery/garganta-del-diablo-1.jpg');
-  background-size: cover;
-  background-position: center;
   z-index: 0;
+  overflow: hidden;
 }
 
 .hero-bg::after {
