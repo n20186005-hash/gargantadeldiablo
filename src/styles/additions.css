@@ -66,6 +66,152 @@
   transform: translateY(-2px);
 }
 
+/* ─── Hero verified facts strip (first screen) ─── */
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+}
+
+.hero-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.hero-fact-icon {
+  font-size: 0.95rem;
+}
+
+/* ─── Verified info (E-E-A-T) ─── */
+.verified-section {
+  background: linear-gradient(180deg, #f3ede2 0%, var(--color-cream) 100%);
+}
+
+.verified-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.verified-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.04);
+}
+
+.verified-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.verified-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-earth-soft);
+}
+
+.verified-value {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+.verified-source {
+  font-size: 0.85rem;
+  color: var(--color-earth-soft);
+  border-top: 1px dashed rgba(0, 0, 0, 0.12);
+  padding-top: 1rem;
+}
+
+.verified-source a {
+  color: var(--color-deep);
+  font-weight: 600;
+}
+
+.verified-updated {
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.compare-full-link {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--color-deep);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.compare-full-link:hover {
+  background: var(--color-deep);
+  color: #fff;
+}
+
+/* ─── Detailed guide link cards ─── */
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.guide-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.guide-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+.guide-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.guide-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--color-deep);
+  margin-bottom: 0.25rem;
+}
+
+.guide-desc {
+  font-size: 0.86rem;
+  color: var(--color-earth-soft);
+  line-height: 1.5;
+}
+
 /* ─── Essentials (icon cards) ─── */
 .essentials-grid {
   display: grid;

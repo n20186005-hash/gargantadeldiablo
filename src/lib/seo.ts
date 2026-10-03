@@ -21,12 +21,12 @@ export interface Seo {
 export function getSeo(locale: string): Seo {
   const map: Record<string, Seo> = {
     es: {
-      title: 'Garganta del Diablo (Tilcara, Jujuy) - Guía Completa y Trekking',
+      title: 'Garganta del Diablo Tilcara (Jujuy): Trekking, Cómo Llegar y Entrada',
       description:
-        'Guía de la Garganta del Diablo en Tilcara, Jujuy: cómo llegar a pie o en auto, entrada y precios, mejor época para el trekking y mapa de ubicación.',
-      ogTitle: 'Garganta del Diablo — Guía de Trekking en Tilcara, Jujuy',
+        'Visitá la Garganta del Diablo en Tilcara, Jujuy. Cómo llegar desde Tilcara, trekking, entrada, cascada, duración del recorrido, mapa y consejos para organizar tu visita.',
+      ogTitle: 'Garganta del Diablo en Tilcara, Jujuy — Trekking, Cómo Llegar y Entrada',
       ogDescription:
-        'Todo para visitar la Garganta del Diablo de Tilcara (Jujuy): camino a pie o en auto, entrada, horarios, mejor época y mapa. No es la Garganta del Diablo de Iguazú.',
+        'Guía de la Garganta del Diablo de Tilcara (Jujuy): cómo llegar desde el pueblo, trekking, entrada, cascada, duración y mapa. No es la Garganta del Diablo de Iguazú.',
       siteName: 'Guía de Garganta del Diablo',
       keywords: [
         'Garganta del Diablo Tilcara',

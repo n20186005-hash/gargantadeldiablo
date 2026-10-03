@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ENTITY } from '../../lib/entity';
+
+const MAPS_URL = ENTITY.mapsShareUrl;
+const GOVT = ENTITY.govtTourismUrl;
+const PATH = '/es/como-llegar-garganta-del-diablo-tilcara/';
+---
+<BaseLayout
+  locale="es"
+  title="Cómo llegar a la Garganta del Diablo en Tilcara (Jujuy): a pie y en auto"
+  description="Cómo llegar a la Garganta del Diablo de Tilcara: distancia desde el pueblo (~4 km a pie, ~6 km en auto), tiempo, ruta, transporte y mapa para organizar tu visita."
+  pathOverride={PATH}
+  singleLocale
+>
+  <nav class="entity-breadcrumb" aria-label="Navegación de migas de pan">
+    <ol>
+      <li><a href="/es/">Inicio</a></li>
+      <li><span>Garganta del Diablo</span></li>
+      <li><span>Cómo llegar</span></li>
+    </ol>
+  </nav>
+
+  <section class="section">
+    <div class="reveal">
+      <p class="section-label">A</p>
+      <h1 class="section-title">Cómo llegar a la Garganta del Diablo en Tilcara</h1>
+      <div class="section-divider"></div>
+      <p class="about-text">
+        La **Garganta del Diablo de Tilcara** está a las afueras del pueblo, en la Quebrada de Humahuaca, Jujuy. Podés llegar **a pie** por un sendero señalizado o en **vehículo / remís** hasta el acceso. Los datos de distancia y comunidad que citamos provienen de la guía oficial de la Secretaría de Turismo de Jujuy.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Desde el centro de Tilcara a pie</h2>
+      <p class="about-text">
+        Desde la plaza principal de Tilcara seguí el camino de tierra señalizado hacia el Paraje Garganta del Diablo. El tramo hasta el acceso es de aproximadamente **4 km de sendero** (unas 2 horas a paso tranquilo, con leve ascenso). Es la opción preferida por quienes hacen el recorrido completo como caminata.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">En auto, moto o remís</h2>
+      <p class="about-text">
+        En vehículo la distancia es de aproximadamente **6 km desde Tilcara** por ruta y camino de ripio. Un remís/taxi de Tilcara puede dejarte en el estacionamiento del acceso al sendero. La ruta es transitable la mayor parte del año, pero conviene consultar el estado del camino en temporada de lluvias.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Distancia y tiempo</h2>
+      <div class="verified-grid">
+        <div class="verified-card"><div class="verified-icon">🚶</div><div><div class="verified-label">A pie</div><div class="verified-value">~4 km de sendero</div></div></div>
+        <div class="verified-card"><div class="verified-icon">🚗</div><div><div class="verified-label">En vehículo</div><div class="verified-value">~6 km desde Tilcara</div></div></div>
+        <div class="verified-card"><div class="verified-icon">⏱️</div><div><div class="verified-label">Tiempo a pie</div><div class="verified-value">~2 h hasta el acceso</div></div></div>
+      </div>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Desde otras ciudades</h2>
+      <p class="about-text">
+        En auto desde **San Salvador de Jujuy** por la Ruta Nacional 9 son unos 110–120 km (aprox. 2 h) hasta Tilcara; desde **Salta** son cerca de 210 km (aprox. 3,5–4 h). Desde allí continuás los últimos kilómetros hasta el acceso señalizado.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Mapa y ubicación</h2>
+      <div class="location-section">
+        <div class="location-map-container">
+          <iframe
+            src={ENTITY.mapsEmbedSrc}
+            width="100%"
+            height="450"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title="Mapa de la Garganta del Diablo en Tilcara, Jujuy"
+          ></iframe>
+        </div>
+        <div class="location-info">
+          <dl class="location-nap">
+            <div><dt>Dirección</dt><dd>{ENTITY.fullName}, {ENTITY.city}, {ENTITY.province}, {ENTITY.country}</dd></div>
+            <div><dt>Plus code</dt><dd>{ENTITY.plusCode}</dd></div>
+            <div><dt>Coordenadas</dt><dd>{ENTITY.latitude}, {ENTITY.longitude}</dd></div>
+          </dl>
+          <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="maps-link">Ver en Google Maps →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <div class="faq-item expanded">
+          <div class="faq-answer">
+            <p><strong>¿Se puede llegar en transporte público?</strong> No hay línea regular hasta el acceso; desde Tilcara lo habitual es a pie, en remís/taxi o vehículo propio.</p>
+            <p><strong>¿El camino es apto para todo vehículo?</strong> El tramo final es de ripio; en temporada de lluvias conviene vehículo alto o coordinar el tramo con remís local.</p>
+            <p><strong>¿Dónde estaciono?</strong> En el acceso al sendero hay sector de estacionamiento; desde allí se abona la entrada (a cargo de la comunidad Ayllu Mama Qolla).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="verified-source">
+        Fuente: <a href={GOVT} target="_blank" rel="noopener noreferrer">Secretaría de Turismo de Jujuy</a> · Última actualización: octubre de 2026
+      </p>
+      <p style="margin-top:1.5rem;">
+        <a href="/es/" class="compare-full-link">← Volver a la guía principal</a>
+        <a href="/es/trekking-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Trekking →</a>
+        <a href="/es/entrada-horarios-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Entrada y horarios →</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

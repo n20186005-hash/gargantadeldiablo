@@ -12,18 +12,24 @@ interface Props {
   description: string;
   pathOverride?: string;
   includeSchema?: boolean;
+  /** 单语页面（如西语意图子页）：只输出 es-AR + x-default，不输出 en/zh/it 的 hreflang */
+  singleLocale?: boolean;
 }
 
-const { locale, title, description, pathOverride, includeSchema = true } = Astro.props as Props;
+const { locale, title, description, pathOverride, includeSchema = true, singleLocale = false } = Astro.props as Props;
 const cfg = localeConfig[locale] || localeConfig.es;
 const site = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://gargantadeldiablo.com';
 const canonical = pathOverride ? `${site}${pathOverride}` : `${site}/${locale}`;
-const alternates: Record<string, string> = {
-  es: `${site}/es`,
-  en: `${site}/en`,
-  zh: `${site}/zh`,
-  it: `${site}/it`,
-};
+const alternates: Record<string, string> = singleLocale
+  ? {
+      'es-AR': `${site}/es`,
+    }
+  : {
+    'es-AR': `${site}/es`,
+    'en-US': `${site}/en`,
+    'zh-Hans': `${site}/zh`,
+    'it-IT': `${site}/it`,
+  };
 const ogImage = `${site}/gallery/garganta-del-diablo-1.jpg`;
 const seo = getSeo(locale);
 const schema = includeSchema ? generateSchema(locale, site) : null;
@@ -50,7 +56,7 @@ const schema = includeSchema ? generateSchema(locale, site) : null;
         <link rel="alternate" hreflang={l} href={url} />
       ))
     }
-    <link rel="alternate" hreflang="x-default" href={alternates.es} />
+    <link rel="alternate" hreflang="x-default" href={`${site}/es`} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={cfg.ogLocale} />

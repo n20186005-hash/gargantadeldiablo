@@ -259,7 +259,7 @@ export const entityContent: Record<Locale, EntityContent> = {
     officialUpdates: 'Para información oficial y novedades turísticas regionales, visitá',
     officialTourismLabel: 'Portal Oficial de Turismo de Argentina / Jujuy',
     mapEmbedTitle: 'Mapa de ubicación de la Garganta del Diablo',
-    heroCitySuffix: ' (Tilcara, Jujuy)',
+    heroCitySuffix: '',
   },
   it: {
     navEntity: 'Scheda',
@@ -292,6 +292,109 @@ export const entityContent: Record<Locale, EntityContent> = {
     officialTourismLabel: 'Portale Ufficiale del Turismo di Argentina / Jujuy',
     mapEmbedTitle: 'Mappa della posizione della Garganta del Diablo',
     heroCitySuffix: ' (Tilcara, Jujuy)',
+  },
+};
+
+/**
+ * 官方核验信息（E-E-A-T）：胡胡伊省旅游局《Manual para Guías Idóneos — Quebrada》明确给出的事实。
+ * 用于首页「Información verificada」板块，不杜撰数字、标注来源与更新时间。
+ */
+const GOVT_TOURISM_MANUAL_URL =
+  'https://www.turismo.jujuy.gob.ar/wp-content/uploads/Manual-para-Guias-Idoneos_QUEBRADA_v5.pdf';
+
+export interface VerifiedFact {
+  icon: string;
+  label: string;
+  value: string;
+}
+
+export interface VerifiedInfo {
+  title: string;
+  intro: string;
+  facts: VerifiedFact[];
+  community: string;
+  sourceLabel: string;
+  sourceName: string;
+  sourceUrl: string;
+  updated: string;
+}
+
+export const VERIFIED_INFO: Record<Locale, VerifiedInfo> = {
+  es: {
+    title: 'Información verificada para visitar',
+    intro:
+      'Los datos siguientes provienen del material oficial de la Secretaría de Turismo de Jujuy. No inventamos cifras: distancia, cascada y gestión comunitaria están documentados en su guía de la Quebrada de Humahuaca.',
+    facts: [
+      { icon: '🚗', label: 'En vehículo', value: '~6 km desde Tilcara' },
+      { icon: '🥾', label: 'A pie', value: '~4 km de sendero' },
+      { icon: '🌊', label: 'Cascada', value: '~15 m de altura' },
+      { icon: '💵', label: 'Entrada', value: 'paga (a cargo de la comunidad)' },
+      { icon: '🏞️', label: 'Comunidad', value: 'Ayllu Mama Qolla' },
+      { icon: '🚻', label: 'Servicios', value: 'baños en el lugar' },
+    ],
+    community:
+      'El sitio se encuentra en tierras de la **Comunidad Aborigen Ayllu Mama Qolla**, que se encarga del mantenimiento y la recepción de visitantes, y cobra entrada. Desde la toma de agua se camina unas 20 minutos más por el lecho del río hasta la cascada natural.',
+    sourceLabel: 'Fuente',
+    sourceName: 'Secretaría de Turismo de Jujuy — Manual para Guías Idóneos (Quebrada de Humahuaca)',
+    sourceUrl: GOVT_TOURISM_MANUAL_URL,
+    updated: 'Última actualización: octubre de 2026',
+  },
+  en: {
+    title: 'Verified visitor information',
+    intro:
+      'The figures below come from the official Jujuy Tourism Board guide to the Quebrada de Humahuaca. We do not invent numbers: distance, waterfall and community management are documented there.',
+    facts: [
+      { icon: '🚗', label: 'By vehicle', value: '~6 km from Tilcara' },
+      { icon: '🥾', label: 'On foot', value: '~4 km trail' },
+      { icon: '🌊', label: 'Waterfall', value: '~15 m high' },
+      { icon: '💵', label: 'Entrance', value: 'paid (community-run)' },
+      { icon: '🏞️', label: 'Community', value: 'Ayllu Mama Qolla' },
+      { icon: '🚻', label: 'Facilities', value: 'toilets on site' },
+    ],
+    community:
+      'The site lies on land of the **Comunidad Aborigen Ayllu Mama Qolla**, which maintains the trail, receives visitors and charges entrance. From the water intake it is about a 20-minute walk along the riverbed to the natural waterfall.',
+    sourceLabel: 'Source',
+    sourceName: 'Jujuy Tourism Board — Manual for Certified Guides (Quebrada de Humahuaca)',
+    sourceUrl: GOVT_TOURISM_MANUAL_URL,
+    updated: 'Last updated: October 2026',
+  },
+  zh: {
+    title: '经官方核证的信息',
+    intro:
+      '以下数据来自胡胡伊省旅游局《乌马瓦卡峡谷向导手册》。我们不杜撰数字：距离、瀑布与社区管理均在官方资料中有据可查。',
+    facts: [
+      { icon: '🚗', label: '自驾', value: '距蒂尔卡拉约 6 公里' },
+      { icon: '🥾', label: '徒步', value: '约 4 公里步道' },
+      { icon: '🌊', label: '瀑布', value: '约 15 米高' },
+      { icon: '💵', label: '门票', value: '收费（由社区管理）' },
+      { icon: '🏞️', label: '社区', value: 'Ayllu Mama Qolla 原住民社区' },
+      { icon: '🚻', label: '设施', value: '现场设有卫生间' },
+    ],
+    community:
+      '景点位于 **Ayllu Mama Qolla 原住民社区** 的土地上，由社区负责步道维护与游客接待并收取门票。从取水设施沿河床再步行约 20 分钟可到达天然瀑布。',
+    sourceLabel: '来源',
+    sourceName: '胡胡伊省旅游局 —《乌马瓦卡峡谷认证向导手册》',
+    sourceUrl: GOVT_TOURISM_MANUAL_URL,
+    updated: '最后更新：2026 年 10 月',
+  },
+  it: {
+    title: 'Informazioni verificate per la visita',
+    intro:
+      'I dati seguenti provengono dalla guida ufficiale della Secretaría de Turismo di Jujuy sulla Quebrada de Humahuaca. Non inventiamo cifre: distanza, cascata e gestione comunitaria sono documentate lì.',
+    facts: [
+      { icon: '🚗', label: 'In auto', value: '~6 km da Tilcara' },
+      { icon: '🥾', label: 'A piedi', value: '~4 km di sentiero' },
+      { icon: '🌊', label: 'Cascata', value: '~15 m di altezza' },
+      { icon: '💵', label: 'Ingresso', value: 'a pagamento (gestito dalla comunità)' },
+      { icon: '🏞️', label: 'Comunità', value: 'Ayllu Mama Qolla' },
+      { icon: '🚻', label: 'Servizi', value: 'bagni in loco' },
+    ],
+    community:
+      'Il sito si trova su terre della **Comunidad Aborigen Ayllu Mama Qolla**, che gestisce la manutenzione, accoglie i visitatori e riscuote l’ingresso. Dalla presa d’acqua si cammina circa 20 minuti lungo l’alveo fino alla cascata naturale.',
+    sourceLabel: 'Fonte',
+    sourceName: 'Secretaría de Turismo di Jujuy — Manuale per Guide Abilitate (Quebrada de Humahuaca)',
+    sourceUrl: GOVT_TOURISM_MANUAL_URL,
+    updated: 'Ultimo aggiornamento: ottobre 2026',
   },
 };
 

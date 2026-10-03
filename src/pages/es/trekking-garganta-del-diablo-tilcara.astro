@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ENTITY } from '../../lib/entity';
+
+const MAPS_URL = ENTITY.mapsShareUrl;
+const GOVT = ENTITY.govtTourismUrl;
+const PATH = '/es/trekking-garganta-del-diablo-tilcara/';
+---
+<BaseLayout
+  locale="es"
+  title="Trekking a la Garganta del Diablo en Tilcara (Jujuy): distancia, dificultad y cascada"
+  description="Trekking de la Garganta del Diablo de Tilcara: distancia, duración, dificultad, altura, la cascada de ~15 m, vadeos y qué llevar. Guía para organizar la caminata."
+  pathOverride={PATH}
+  singleLocale
+>
+  <nav class="entity-breadcrumb" aria-label="Navegación de migas de pan">
+    <ol>
+      <li><a href="/es/">Inicio</a></li>
+      <li><span>Garganta del Diablo</span></li>
+      <li><span>Trekking</span></li>
+    </ol>
+  </nav>
+
+  <section class="section">
+    <div class="reveal">
+      <p class="section-label">A</p>
+      <h1 class="section-title">Trekking a la Garganta del Diablo en Tilcara</h1>
+      <div class="section-divider"></div>
+      <p class="about-text">
+        El recorrido a la **Garganta del Diablo de Tilcara** es una caminata de altura por un cañón de paredes ocre, con tramos de vadeo y una cascada natural al final. Los datos de distancia y cascada que citamos provienen de la guía oficial de la Secretaría de Turismo de Jujuy.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Datos del recorrido</h2>
+      <div class="verified-grid">
+        <div class="verified-card"><div class="verified-icon">🥾</div><div><div class="verified-label">Sendero</div><div class="verified-value">~4 km desde Tilcara</div></div></div>
+        <div class="verified-card"><div class="verified-icon">⏱️</div><div><div class="verified-label">Duración</div><div class="verified-value">2–3 h ida y vuelta</div></div></div>
+        <div class="verified-card"><div class="verified-icon">🌊</div><div><div class="verified-label">Cascada</div><div class="verified-value">~15 m de altura</div></div></div>
+        <div class="verified-card"><div class="verified-icon">⛰️</div><div><div class="verified-label">Altura</div><div class="verified-value">~2.450 m</div></div></div>
+      </div>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Dificultad y terreno</h2>
+      <p class="about-text">
+        Dificultad **moderada**: el sendero desciende entre paredes de roca y tiene tramos de **vadeo** por el lecho del río, sobre todo en temporada de lluvias. Calzado con buen agarre es imprescindible. La comunidad **Ayllu Mama Qolla** administra el acceso y cobra entrada en el lugar.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Itinerario resumido</h2>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-time">0:00</div><div class="timeline-marker"><span class="timeline-dot"></span></div><div class="timeline-card"><h4 class="timeline-title">Acceso al sendero</h4><p class="timeline-text">Llegada al estacionamiento y pago de entrada.</p></div></div>
+        <div class="timeline-item"><div class="timeline-time">0:10</div><div class="timeline-marker"><span class="timeline-dot"></span></div><div class="timeline-card"><h4 class="timeline-title">Cañón y vadeos</h4><p class="timeline-text">Descenso entre paredes de roca con tramos de río.</p></div></div>
+        <div class="timeline-item"><div class="timeline-time">~0:40</div><div class="timeline-marker"><span class="timeline-dot"></span></div><div class="timeline-card"><h4 class="timeline-title">Cascada</h4><p class="timeline-text">Desde la toma de agua, ~20 min más por el lecho hasta la cascada de ~15 m.</p></div></div>
+        <div class="timeline-item"><div class="timeline-time">1:30</div><div class="timeline-marker"><span class="timeline-dot"></span></div><div class="timeline-card"><h4 class="timeline-title">Regreso</h4><p class="timeline-text">Ida y vuelta completa en unas 2–3 horas.</p></div></div>
+      </div>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Qué llevar</h2>
+      <ul class="bring-list">
+        <li>Agua (mínimo 1 litro por persona).</li>
+        <li>Calzado de trekking con buen agarre para vadeos.</li>
+        <li>Protector solar, gorra y anteojos (UV muy intensa a 2.450 m).</li>
+        <li>Calzado impermeable o bolsa para el teléfono/cámara en los vadeos.</li>
+        <li>Efectivo en pesos para la entrada.</li>
+      </ul>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Seguridad y temporada</h2>
+      <p class="about-text">
+        En verano austral (ene–mar) aumenta la probabilidad de crecidas repentinas en el río: consultá el pronóstico y evitá entrar al cañón con lluvia cercana. El mejor momento suele ser la temporada seca (may–sep), con días despejados y noches frías.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <div class="faq-item expanded">
+          <div class="faq-answer">
+            <p><strong>¿Cuánto dura la caminata?</strong> Unas 2–3 horas ida y vuelta con paradas.</p>
+            <p><strong>¿Hay que saber nadar?</strong> No es necesario, pero sí cruzar tramos de río por el lecho: usá calzado antideslizante.</p>
+            <p><strong>¿Es apta para niños?</strong> Sí con supervisión; los vadeos y la altura requieren precaución.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="verified-source">
+        Fuente: <a href={GOVT} target="_blank" rel="noopener noreferrer">Secretaría de Turismo de Jujuy</a> · Última actualización: octubre de 2026
+      </p>
+      <p style="margin-top:1.5rem;">
+        <a href="/es/" class="compare-full-link">← Volver a la guía principal</a>
+        <a href="/es/como-llegar-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Cómo llegar →</a>
+        <a href="/es/entrada-horarios-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Entrada y horarios →</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

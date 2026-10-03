@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const PATH = '/es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/';
+const rows = [
+  { name: 'Garganta del Diablo de Iguazú', province: 'Misiones', landscape: 'Catarata internacional gigante', experience: 'Paseos de madera, sprays y mucho caudal', bestFor: 'Turismo clásico y fotografía de cascadas' },
+  { name: 'Garganta del Diablo de Salta (Cafayate)', province: 'Salta', landscape: 'Cañón rojo y seco', experience: 'Parada corta en ruta entre paredes', bestFor: 'Viajeros en auto y geomorfología' },
+  { name: 'Garganta del Diablo de Tilcara', province: 'Jujuy', landscape: 'Cañón de altura con cascada', experience: 'Trekking, vadeos y contexto precolombino', bestFor: 'Senderistas y viajeros lentos', focus: true },
+];
+---
+<BaseLayout
+  locale="es"
+  title="Garganta del Diablo de Tilcara vs Iguazú y Salta: ¿cuál es cuál?"
+  description="¿Cuál es la Garganta del Diablo? Comparamos la de Tilcara (Jujuy), la de las Cataratas del Iguazú (Misiones) y la de Cafayate (Salta): provincia, paisaje, experiencia y para quién es cada una."
+  pathOverride={PATH}
+  singleLocale
+>
+  <nav class="entity-breadcrumb" aria-label="Navegación de migas de pan">
+    <ol>
+      <li><a href="/es/">Inicio</a></li>
+      <li><span>Garganta del Diablo</span></li>
+      <li><span>Tilcara vs Iguazú vs Salta</span></li>
+    </ol>
+  </nav>
+
+  <section class="section">
+    <div class="reveal">
+      <p class="section-label">A</p>
+      <h1 class="section-title">Garganta del Diablo: Tilcara, Iguazú y Salta</h1>
+      <div class="section-divider"></div>
+      <p class="about-text">
+        En Argentina, **Garganta del Diablo** no nombra un solo lugar. Las tres que suelen confundirse son muy distintas. Esta página aclara diferencias para que encuentres la que buscás.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr><th>Nombre</th><th>Provincia</th><th>Paisaje</th><th>Experiencia</th><th>Ideal para</th></tr>
+          </thead>
+          <tbody>
+            {
+              rows.map((row) => (
+                <tr class={row.focus ? 'is-focus' : undefined}>
+                  <td>{row.name}</td>
+                  <td>{row.province}</td>
+                  <td>{row.landscape}</td>
+                  <td>{row.experience}</td>
+                  <td>{row.bestFor}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Esta guía: la de Tilcara (Jujuy)</h2>
+      <p class="about-text">
+        La **Garganta del Diablo de Tilcara** es un cañón de altura (~2.450 m) en la Quebrada de Humahuaca, con cascada y vadeos, orientado al senderismo. No es el mirador de las Cataratas del Iguazú ni la formación cerca de Cafayate, Salta.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p style="margin-top:1.5rem;">
+        <a href="/es/" class="compare-full-link">← Volver a la guía de Tilcara</a>
+        <a href="/es/como-llegar-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Cómo llegar →</a>
+        <a href="/es/trekking-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Trekking →</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

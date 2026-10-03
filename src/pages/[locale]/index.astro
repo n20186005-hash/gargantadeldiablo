@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { translations, type Locale } from '../../i18n/translations';
 import { getSeo } from '../../lib/seo';
-import { ENTITY, entityContent, ENTITY_FAQ, IMAGE_CREDIT, heroAlt, landmarkAlt, galleryAlt } from '../../lib/entity';
+import { ENTITY, entityContent, ENTITY_FAQ, IMAGE_CREDIT, VERIFIED_INFO, heroAlt, landmarkAlt, galleryAlt } from '../../lib/entity';
 import { FACILITIES } from '../../lib/practical';
 import { DEEP_DIVE } from '../../lib/deepdive';
 import { getWeather } from '../../lib/weather';
@@ -552,6 +552,76 @@ const PAGE_ENHANCEMENTS: Record<
 };
 
 const extra = PAGE_ENHANCEMENTS[locale];
+
+/**
+ * 首页消歧模块（短版，~150 字）：避免主页被 Salta/Iguazú 内容稀释主题。
+ * 完整对比表放到独立子页 /es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/。
+ */
+const DISAMBIGUATION: Record<Locale, { h2: string; text: string; cta: string; href: string }> = {
+  es: {
+    h2: '¿Esta es la Garganta del Diablo de Tilcara?',
+    text: 'Sí. Esta guía está dedicada a la **Garganta del Diablo de Tilcara**, Provincia de Jujuy, cerca de la Quebrada de Humahuaca. No debe confundirse con la Garganta del Diablo de las Cataratas del Iguazú ni con la formación del mismo nombre cerca de Cafayate, Salta.',
+    cta: 'Comparar con Iguazú y Salta',
+    href: '/es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/',
+  },
+  en: {
+    h2: 'Is this the Tilcara Garganta del Diablo?',
+    text: 'Yes. This guide is dedicated to the **Garganta del Diablo of Tilcara**, Jujuy Province, near the Quebrada de Humahuaca. It is not the same as the Garganta del Diablo at Iguazú Falls, nor the formation of the same name near Cafayate, Salta.',
+    cta: 'Compare with Iguazú and Salta',
+    href: '/es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/',
+  },
+  zh: {
+    h2: '这是蒂尔卡拉的魔鬼之喉吗？',
+    text: '是的。本指南专注于**蒂尔卡拉（Tilcara）的魔鬼之喉**，位于胡胡伊省，靠近乌马瓦卡峡谷。它既不是伊瓜苏瀑布群的魔鬼之喉，也不是萨尔塔 Cafayate 附近同名的地貌。',
+    cta: '与伊瓜苏、萨尔塔对比',
+    href: '/es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/',
+  },
+  it: {
+    h2: 'Questa è la Garganta del Diablo di Tilcara?',
+    text: 'Sì. Questa guida è dedicata alla **Garganta del Diablo di Tilcara**, provincia di Jujuy, vicino alla Quebrada de Humahuaca. Non va confusa con la Garganta del Diablo delle Cascate di Iguazú né con la formazione omonima vicino a Cafayate, Salta.',
+    cta: 'Confronta con Iguazú e Salta',
+    href: '/es/garganta-del-diablo-tilcara-vs-iguazu-vs-salta/',
+  },
+};
+const disambiguation = DISAMBIGUATION[locale];
+const verified = VERIFIED_INFO[locale];
+
+/** 西语意图子页：首页做概要，深链到这三篇承接高意图查询 */
+const GUIDE_LINKS: Record<Locale, { title: string; items: { href: string; icon: string; name: string; desc: string }[] }> = {
+  es: {
+    title: 'Guías detalladas',
+    items: [
+      { href: '/es/como-llegar-garganta-del-diablo-tilcara/', icon: '🚗', name: 'Cómo llegar a la Garganta del Diablo', desc: 'Desde Tilcara: a pie, en auto, distancia, tiempo y mapa.' },
+      { href: '/es/trekking-garganta-del-diablo-tilcara/', icon: '🥾', name: 'Trekking de la Garganta del Diablo', desc: 'Distancia, duración, dificultad, altura, cascada y qué llevar.' },
+      { href: '/es/entrada-horarios-garganta-del-diablo-tilcara/', icon: '🎟️', name: 'Entrada y horarios', desc: 'Precio, horario y cuánto tiempo lleva la visita.' },
+    ],
+  },
+  en: {
+    title: 'Detailed guides',
+    items: [
+      { href: '/es/como-llegar-garganta-del-diablo-tilcara/', icon: '🚗', name: 'How to get to Garganta del Diablo', desc: 'From Tilcara: on foot, by car, distance, time and map.' },
+      { href: '/es/trekking-garganta-del-diablo-tilcara/', icon: '🥾', name: 'Garganta del Diablo trekking', desc: 'Distance, duration, difficulty, altitude, waterfall and what to bring.' },
+      { href: '/es/entrada-horarios-garganta-del-diablo-tilcara/', icon: '🎟️', name: 'Entrance & opening hours', desc: 'Price, hours and how long the visit takes.' },
+    ],
+  },
+  zh: {
+    title: '详细攻略',
+    items: [
+      { href: '/es/como-llegar-garganta-del-diablo-tilcara/', icon: '🚗', name: '如何前往魔鬼之喉', desc: '从蒂尔卡拉出发：徒步、自驾、距离、时间与地图。' },
+      { href: '/es/trekking-garganta-del-diablo-tilcara/', icon: '🥾', name: '魔鬼之喉徒步', desc: '距离、耗时、难度、海拔、瀑布与装备。' },
+      { href: '/es/entrada-horarios-garganta-del-diablo-tilcara/', icon: '🎟️', name: '门票与开放时间', desc: '价格、时段与游览耗时。' },
+    ],
+  },
+  it: {
+    title: 'Guide dettagliate',
+    items: [
+      { href: '/es/como-llegar-garganta-del-diablo-tilcara/', icon: '🚗', name: 'Come arrivare alla Garganta del Diablo', desc: 'Da Tilcara: a piedi, in auto, distanza, tempo e mappa.' },
+      { href: '/es/trekking-garganta-del-diablo-tilcara/', icon: '🥾', name: 'Trekking della Garganta del Diablo', desc: 'Distanza, durata, difficoltà, altitudine, cascata e cosa portare.' },
+      { href: '/es/entrada-horarios-garganta-del-diablo-tilcara/', icon: '🎟️', name: 'Ingresso e orari', desc: 'Prezzo, orari e quanto dura la visita.' },
+    ],
+  },
+};
+const guideLinks = GUIDE_LINKS[locale];
 ---
 
 <BaseLayout locale={locale} title={seo.title} description={seo.description}>
@@ -642,8 +712,8 @@ const extra = PAGE_ENHANCEMENTS[locale];
         <p>📞 {t.hero.description.phone}</p>
         <p>🏛️ {t.hero.description.category}</p>
       </div>
-      <a href="#history" class="hero-cta">
-        {t.hero.cta}
+      <a href="#transportation" class="hero-cta">
+        {t.hero.ctaLlegar}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M7 17L17 7M17 7H7M17 7V17"></path>
         </svg>
@@ -651,6 +721,13 @@ const extra = PAGE_ENHANCEMENTS[locale];
       <div class="hero-cta-group">
         <a href="#visiting" class="hero-cta-secondary">{t.visiting.title}</a>
         <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">{t.location.openMaps}</a>
+      </div>
+      <div class="hero-facts">
+        {
+          verified.facts.map((f) => (
+            <span class="hero-fact"><span class="hero-fact-icon">{f.icon}</span>{f.label}: {f.value}</span>
+          ))
+        }
       </div>
     </div>
     <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
@@ -706,62 +783,73 @@ const extra = PAGE_ENHANCEMENTS[locale];
     </div>
   </section>
 
-  <!-- Name Disambiguation -->
+  <!-- Name Disambiguation (short, homepage only) -->
   <section id="compare" class="section" style="background:rgba(0,0,0,0.02);">
     <div class="reveal">
       <p class="section-label">00</p>
-      <h2 class="section-title">{extra.comparison.title}</h2>
+      <h2 class="section-title">{disambiguation.h2}</h2>
       <div class="section-divider"></div>
-      <p class="about-text" style="white-space:pre-line;margin-bottom:1.5rem;" set:html={renderText(extra.comparison.intro)}></p>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:1.5rem;" set:html={renderText(disambiguation.text)}></p>
     </div>
     <div class="reveal">
-      <div class="compare-table-wrap">
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th>{extra.comparison.headers.name}</th>
-              <th>{extra.comparison.headers.province}</th>
-              <th>{extra.comparison.headers.landscape}</th>
-              <th>{extra.comparison.headers.experience}</th>
-              <th>{extra.comparison.headers.bestFor}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              extra.comparison.rows.map((row) => (
-                <tr class={row.focus ? 'is-focus' : undefined}>
-                  <td>{row.name}</td>
-                  <td>{row.province}</td>
-                  <td>{row.landscape}</td>
-                  <td>{row.experience}</td>
-                  <td>{row.bestFor}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
+      <a href={disambiguation.href} class="compare-full-link">{disambiguation.cta} →</a>
+    </div>
+  </section>
+
+  <!-- Verified info (E-E-A-T, source-attributed) -->
+  <section id="verified" class="section verified-section">
+    <div class="reveal">
+      <p class="section-label">00b</p>
+      <h2 class="section-title">{verified.title}</h2>
+      <div class="section-divider"></div>
+      <p class="about-text" style="margin-bottom:1.5rem;">{verified.intro}</p>
     </div>
     <div class="reveal">
-      <div class="compare-cards">
+      <div class="verified-grid">
         {
-          extra.comparison.rows.map((row) => (
-            <article class={row.focus ? 'compare-card is-focus' : 'compare-card'}>
-              <div class="compare-card-top">
-                <h3 class="compare-card-title">{row.name}</h3>
-                {row.focus && <span class="compare-focus-badge">{extra.focusBadge}</span>}
+          verified.facts.map((f) => (
+            <div class="verified-card">
+              <div class="verified-icon">{f.icon}</div>
+              <div>
+                <div class="verified-label">{f.label}</div>
+                <div class="verified-value">{f.value}</div>
               </div>
-              <p><strong>{extra.comparison.headers.province}:</strong> {row.province}</p>
-              <p><strong>{extra.comparison.headers.landscape}:</strong> {row.landscape}</p>
-              <p><strong>{extra.comparison.headers.experience}:</strong> {row.experience}</p>
-              <p><strong>{extra.comparison.headers.bestFor}:</strong> {row.bestFor}</p>
-            </article>
+            </div>
           ))
         }
       </div>
     </div>
     <div class="reveal">
-      <div class="compare-note" set:html={renderText(extra.comparison.note)}></div>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:1.25rem;" set:html={renderText(verified.community)}></p>
+      <p class="verified-source">
+        {verified.sourceLabel}:{' '}
+        <a href={verified.sourceUrl} target="_blank" rel="noopener noreferrer">{verified.sourceName}</a>
+        <span class="verified-updated"> · {verified.updated}</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Detailed guides (internal links to intent subpages) -->
+  <section id="guias" class="section" style="background:var(--color-cream);">
+    <div class="reveal">
+      <p class="section-label">00c</p>
+      <h2 class="section-title">{guideLinks.title}</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="reveal">
+      <div class="guides-grid">
+        {
+          guideLinks.items.map((g) => (
+            <a class="guide-card" href={g.href}>
+              <div class="guide-icon">{g.icon}</div>
+              <div>
+                <div class="guide-name">{g.name}</div>
+                <div class="guide-desc">{g.desc}</div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
     </div>
   </section>
 

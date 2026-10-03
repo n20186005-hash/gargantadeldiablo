@@ -5,7 +5,7 @@ export type TransportOption = { name: string; time: string; price: string; steps
 
 export type Translations = {
   nav: { history: string; architecture: string; monuments: string; eco: string; visiting: string; transportation: string; gallery: string; reviews: string; faq: string; location: string };
-  hero: { tags: string[]; tagline: string; title: string; subtitle: string; cta: string; description: { address: string; phone: string; category: string } };
+  hero: { tags: string[]; tagline: string; title: string; subtitle: string; cta: string; ctaLlegar: string; description: { address: string; phone: string; category: string } };
   rating: { reviews: string; source: string };
   history: { title: string; intro: string };
   myths: { title: string; intro: string; items: { title: string; content: string }[] };
@@ -90,6 +90,7 @@ export const translations: Record<Locale, Translations> = {
       title: "Garganta del Diablo",
       subtitle: "魔鬼之喉 · 天然峡谷 · 乌马瓦卡峡谷",
       cta: "探索这座自然奇观",
+      ctaLlegar: "如何前往",
       description: {
         address: "Paraje Garganta del Diablo, Tilcara, Jujuy, 阿根廷",
         phone: "+54 388 422-1325",
@@ -290,6 +291,7 @@ export const translations: Record<Locale, Translations> = {
       title: "Garganta del Diablo",
       subtitle: "Devil's Throat · Natural Gorge · Quebrada de Humahuaca",
       cta: "Explore This Natural Wonder",
+      ctaLlegar: "How to get there",
       description: {
         address: "Paraje Garganta del Diablo, Tilcara, Jujuy, Argentina",
         phone: "+54 388 422-1325",
@@ -490,6 +492,7 @@ export const translations: Record<Locale, Translations> = {
       title: "Garganta del Diablo",
       subtitle: "Cañón Natural · Quebrada de Humahuaca · Andes",
       cta: "Explorá Esta Maravilla Natural",
+      ctaLlegar: "Cómo llegar",
       description: {
         address: "Paraje Garganta del Diablo, Tilcara, Jujuy, Argentina",
         phone: "+54 388 422-1325",
@@ -690,6 +693,7 @@ export const translations: Record<Locale, Translations> = {
       title: "Garganta del Diablo",
       subtitle: "Gola del Diavolo · Canyon Naturale · Quebrada de Humahuaca",
       cta: "Esplora Questa Meraviglia Naturale",
+      ctaLlegar: "Come arrivare",
       description: {
         address: "Paraje Garganta del Diablo, Tilcara, Jujuy, Argentina",
         phone: "+54 388 422-1325",

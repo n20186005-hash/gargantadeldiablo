@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ENTITY } from '../../lib/entity';
+
+const MAPS_URL = ENTITY.mapsShareUrl;
+const GOVT = ENTITY.govtTourismUrl;
+const PATH = '/es/entrada-horarios-garganta-del-diablo-tilcara/';
+---
+<BaseLayout
+  locale="es"
+  title="Entrada y horarios de la Garganta del Diablo en Tilcara (Jujuy): precio y duración"
+  description="Entrada y horarios de la Garganta del Diablo de Tilcara: quién cobra, por qué es paga, cuánto tiempo lleva la visita y consejos para confirmar el precio antes de ir."
+  pathOverride={PATH}
+  singleLocale
+>
+  <nav class="entity-breadcrumb" aria-label="Navegación de migas de pan">
+    <ol>
+      <li><a href="/es/">Inicio</a></li>
+      <li><span>Garganta del Diablo</span></li>
+      <li><span>Entrada y horarios</span></li>
+    </ol>
+  </nav>
+
+  <section class="section">
+    <div class="reveal">
+      <p class="section-label">A</p>
+      <h1 class="section-title">Entrada y horarios de la Garganta del Diablo en Tilcara</h1>
+      <div class="section-divider"></div>
+      <p class="about-text">
+        El sitio se encuentra en tierras de la **Comunidad Aborigen Ayllu Mama Qolla**, que se encarga del mantenimiento, la recepción de visitantes y cobra **entrada** en el lugar. En el acceso hay **baños (sanitarios)**. Lo que sigue aclara cómo se gestiona y cuánto tiempo lleva la visita, según la guía oficial de la Secretaría de Turismo de Jujuy.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">¿La entrada es paga?</h2>
+      <p class="about-text">
+        Sí. El acceso al sendero es de **entrada paga**, administrada por la comunidad local. No publicamos un valor fijo porque el precio puede cambiar; llevá **efectivo en pesos argentinos** y confirmá el monto exhibido en el acceso al llegar.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Horarios</h2>
+      <div class="verified-grid">
+        <div class="verified-card"><div class="verified-icon">🕗</div><div><div class="verified-label">Horario habitual</div><div class="verified-value">Diurno (consultar en el lugar)</div></div></div>
+        <div class="verified-card"><div class="verified-icon">🎟️</div><div><div class="verified-label">Entrada</div><div class="verified-value">Paga · a cargo de la comunidad</div></div></div>
+        <div class="verified-card"><div class="verified-icon">🚻</div><div><div class="verified-label">Servicios</div><div class="verified-value">Baños en el acceso</div></div></div>
+      </div>
+      <p class="about-text" style="margin-top:1rem;">
+        Los horarios pueden ajustarse por temporada o clima. Recomendamos salir temprano, con luz diurna completa, para la caminata y el regreso.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">¿Cuánto tiempo lleva la visita?</h2>
+      <p class="about-text">
+        El recorrido completo (ida, cascada y vuelta) demanda unas **2–3 horas**. Si sumás el traslado hasta el acceso y pausas, preved medio día desde Tilcara.
+      </p>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Consejos antes de ir</h2>
+      <ul class="bring-list">
+        <li>Llevá efectivo en pesos: el pago es en el acceso, a cargo de la comunidad.</li>
+        <li>Confirmá el horario y el estado del camino el mismo día, sobre todo en temporada de lluvias.</li>
+        <li>Respetá las indicaciones de la comunidad y el sendero señalizado.</li>
+        <li>Visitá la <a href={MAPS_URL} target="_blank" rel="noopener noreferrer">ficha de Google Maps</a> para ver valoraciones recientes.</li>
+      </ul>
+    </div>
+
+    <div class="reveal entity-block">
+      <h2 class="entity-h2">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <div class="faq-item expanded">
+          <div class="faq-answer">
+            <p><strong>¿Cuánto cuesta la entrada?</strong> El valor lo fija la comunidad y se exhibe en el acceso; no damos un precio fijo para no desactualizar la información.</p>
+            <p><strong>¿Se puede pagar con tarjeta?</strong> No es seguro; llevá efectivo en pesos argentinos.</p>
+            <p><strong>¿A qué hora cierra?</strong> El acceso es de día; confirmá el horario exacto en el lugar antes de entrar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="verified-source">
+        Fuente: <a href={GOVT} target="_blank" rel="noopener noreferrer">Secretaría de Turismo de Jujuy</a> · Última actualización: octubre de 2026
+      </p>
+      <p style="margin-top:1.5rem;">
+        <a href="/es/" class="compare-full-link">← Volver a la guía principal</a>
+        <a href="/es/como-llegar-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Cómo llegar →</a>
+        <a href="/es/trekking-garganta-del-diablo-tilcara/" class="compare-full-link" style="margin-left:0.75rem;">Trekking →</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

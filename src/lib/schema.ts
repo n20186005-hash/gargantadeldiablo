@@ -209,6 +209,7 @@ export function generateSchema(locale: string, baseUrl: string) {
         name,
         alternateName: [
           'Garganta del Diablo',
+          'Garganta del Diablo de Tilcara',
           "Devil's Throat",
           '魔鬼之喉',
           'Gola del Diavolo',
